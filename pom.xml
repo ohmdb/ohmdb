@@ -23,7 +23,23 @@
 				</configuration>
 			</plugin>
 
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-Xmx800m</argLine>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
+
+	<modules>
+		<module>ohmdb-api</module>
+		<module>ohmdb-core</module>
+		<module>ohmdb-demo</module>
+		<module>ohmdb-test</module>
+	</modules>
 
 </project>
