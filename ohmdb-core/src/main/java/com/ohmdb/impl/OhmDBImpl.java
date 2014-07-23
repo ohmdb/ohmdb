@@ -488,4 +488,9 @@ public class OhmDBImpl implements OhmDB, DataSource {
 		this.error = e;
 	}
 
+	@Override
+	public long insert(Object entity) {
+		throw Errors.notReady();
+	}
+
 }

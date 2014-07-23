@@ -54,6 +54,8 @@ public interface OhmDB {
 
 	Transaction startTransaction();
 
+	long insert(Object entity);
+
 	void delete(long id);
 
 	void update(Object entity);
