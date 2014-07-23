@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>com.ohmdb</groupId>
-		<artifactId>ohmdb</artifactId>
+		<artifactId>ohmdb-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
