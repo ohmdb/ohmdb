@@ -1,4 +1,4 @@
-package com.ohmdb.util;
+package com.ohmdb.test;
 
 /*
  * #%L
