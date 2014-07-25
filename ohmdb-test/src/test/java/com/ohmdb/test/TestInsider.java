@@ -284,9 +284,11 @@ public class TestInsider implements DbInsider {
 	}
 
 	public void delete(long id) {
-		for (RelationCheck rel : relations.values()) {
-			rel.deleteFrom(id);
-			rel.deleteTo(id);
+		synchronized (relations) {
+			for (RelationCheck rel : relations.values()) {
+				rel.deleteFrom(id);
+				rel.deleteTo(id);
+			}
 		}
 	}
 
