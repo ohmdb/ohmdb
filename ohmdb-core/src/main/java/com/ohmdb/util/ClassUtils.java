@@ -189,10 +189,14 @@ public class ClassUtils {
 	}
 
 	public static Object invoke(Method m, Object target, Object... args) {
+		boolean accessible = m.isAccessible();
 		try {
+			m.setAccessible(true);
 			return m.invoke(target, args);
 		} catch (Exception e) {
 			throw Errors.rte("Cannot invoke method '%s' with args: %s", e, m.getName(), Arrays.toString(args));
+		} finally {
+			m.setAccessible(accessible);
 		}
 	}
 
