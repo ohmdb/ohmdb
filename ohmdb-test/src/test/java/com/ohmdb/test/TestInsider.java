@@ -232,7 +232,7 @@ public class TestInsider implements DbInsider {
 	public void getting(Class<?> table, long id) {
 		synchro.startRead(table);
 	}
-
+	
 	@Override
 	public void got(Class<?> table, long id, Object entity) {
 		PropertyInfo[] properties = introspector.describe(entity.getClass()).getProps();
@@ -243,7 +243,7 @@ public class TestInsider implements DbInsider {
 		for (PropertyInfo prop : properties) {
 			Object value = prop.get(entity);
 			Object expected = values.get(prop.getName());
-
+   
 			check(Objects.equal(value, expected));
 		}
 

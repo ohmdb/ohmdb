@@ -23,6 +23,8 @@ package com.ohmdb.demo;
 import java.io.File;
 import java.util.Random;
 
+import org.testng.annotations.Test;
+
 import com.ohmdb.api.Ids;
 import com.ohmdb.api.Join;
 import com.ohmdb.api.ManyToMany;
@@ -34,12 +36,12 @@ public class Benchmark {
 
 	private static final Random RND = new Random();
 
-	private static String DB_FILENAME;
+	private static final String DB_FILENAME = "/tmp/benchmark.db";
 
-	public static void main(String[] args) {
-		int usersN = args.length > 0 ? Integer.parseInt(args[0]) : 1000;
-		int friendsN = args.length > 1 ? Integer.parseInt(args[1]) : 50;
-		DB_FILENAME = args.length > 2 ? args[2] : "ohmdb-demo.db";
+	@Test
+	public void benchmark() {
+		int usersN = 1000;
+		int friendsN = 50;
 
 		System.out.println("Benchmark: " + usersN + " users, each has " + friendsN + " friends in average\n");
 
