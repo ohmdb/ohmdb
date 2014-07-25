@@ -22,22 +22,19 @@ package com.ohmdb.demo;
 
 public class DemoUser {
 
-//	private long _id;
+	private long _id;
 
 	private String _username;
 
 	private int _age;
 
-	public DemoUser() {
+	public long getId() {
+		return _id;
 	}
 
-//	public long getId() {
-//		return _id;
-//	}
-//
-//	public void setId(long id) {
-//		this._id = id;
-//	}
+	public void setId(long id) {
+		this._id = id;
+	}
 
 	public String getUsername() {
 		return _username;
