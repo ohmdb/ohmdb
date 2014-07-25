@@ -26,6 +26,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Random;
 
+import com.ohmdb.util.Measure;
+
 public class FileBenchmark {
 
 	private static final int SIZE = 5 * 1024 * 1024;

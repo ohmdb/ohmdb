@@ -31,6 +31,7 @@ import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.Ohm;
 import com.ohmdb.api.OhmDB;
 import com.ohmdb.api.Table;
+import com.ohmdb.util.Measure;
 
 public class Benchmark {
 
