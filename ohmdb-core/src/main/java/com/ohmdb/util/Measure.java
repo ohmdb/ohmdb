@@ -48,7 +48,7 @@ public class Measure {
 		start = Calendar.getInstance().getTimeInMillis();
 	}
 
-	public static void finish(String name) {
+	public static long finish(String name) {
 		long end = Calendar.getInstance().getTimeInMillis();
 		long ms = end - start;
 
@@ -70,6 +70,8 @@ public class Measure {
 
 		System.out.println(String.format(" - total time for %s '%s' operations: %s ms, average: %s/sec, mem=%sMB",
 				count, name, ms, avgs, mem));
+		
+		return ms;
 	}
 
 	public static void finish() {
