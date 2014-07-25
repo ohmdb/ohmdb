@@ -41,9 +41,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:ohmdb/ohmdb.git</connection>
+		<connection>scm:git:git://github.com/ohmdb/ohmdb.git</connection>
 		<developerConnection>scm:git:git@github.com:ohmdb/ohmdb.git</developerConnection>
-		<url>git@github.com:ohmdb/ohmdb.git</url>
+		<url>https://github.com/ohmdb/ohmdb</url>
 	</scm>
 
 	<properties>
