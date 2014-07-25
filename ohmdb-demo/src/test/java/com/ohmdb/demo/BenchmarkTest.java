@@ -33,14 +33,14 @@ import com.ohmdb.api.OhmDB;
 import com.ohmdb.api.Table;
 import com.ohmdb.util.Measure;
 
-public class Benchmark {
+public class BenchmarkTest {
 
 	private static final Random RND = new Random();
 
 	private static final String DB_FILENAME = "/tmp/benchmark.db";
 
 	@Test
-	public void benchmark() {
+	public void testBenchmark() {
 		int usersN = 1000;
 		int friendsN = 50;
 

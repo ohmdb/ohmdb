@@ -26,9 +26,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Random;
 
+import org.testng.annotations.Test;
+
 import com.ohmdb.util.Measure;
 
-public class FileBenchmark {
+public class FileBenchmarkTest {
 
 	private static final int SIZE = 5 * 1024 * 1024;
 
@@ -36,16 +38,16 @@ public class FileBenchmark {
 
 	static final Random rnd = new Random();
 
-	public static void main(String[] args) throws IOException {
-
+	@Test
+	public void benchmarkRandomWrites() throws Exception {
 		ByteBuffer BUF = ByteBuffer.allocateDirect(64);
 
-		String s = args.length > 2 ? args[2] : "ohmdb-demo.db";
+		String s = "/tmp/ohmdb-demo.db";
 
 		RandomAccessFile ff = new RandomAccessFile(s, "rw");
 
-		int count = args.length > 0 ? Integer.parseInt(args[0]) : 100;
-		int mm = args.length > 1 ? Integer.parseInt(args[1]) : 10;
+		int count = 100;
+		int mm = 10;
 
 		for (int kk = 0; kk < 10; kk++) {
 			Measure.start(count);
@@ -79,7 +81,7 @@ public class FileBenchmark {
 		ff.close();
 	}
 
-	private static void write(FileChannel fc, ByteBuffer out, int count) throws IOException {
+	private void write(FileChannel fc, ByteBuffer out, int count) throws IOException {
 		int real = 0;
 		while (out.hasRemaining()) {
 			real += fc.write(out);
