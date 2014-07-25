@@ -107,9 +107,8 @@ public class UTILS {
 	}
 
 	public static long getId(Object obj) {
-		// FIXME use getter id() or getId()
+		Object id = ClassUtils.getPropValue(obj, "id");
 
-		Object id = ClassUtils.getFieldValue(obj, "id");
 		if (id == null) {
 			throw Errors.rte("The field 'id' cannot be null!");
 		}
