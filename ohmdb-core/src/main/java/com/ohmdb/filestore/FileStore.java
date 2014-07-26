@@ -68,7 +68,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 	public static final int BLOCK_SIZE = BLOCK_OVERHEAD + FIRST_CAP;
 
-	protected static final int BUF_SIZE = 5 * 1024 * 1024;
+	protected static final int BUF_SIZE = bufSize() * 1024 * 1024;
 
 	protected static final int MAX_BLOCKS = BUF_SIZE / BLOCK_SIZE;
 
@@ -174,6 +174,19 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 		}
 
 		print("Database is ready.");
+	}
+
+	private static int bufSize() {
+		String size = System.getenv("OHMDB_BUF");
+
+		if (size == null) {
+			size = System.getProperty("OHMDB_BUF");
+		}
+
+		int n = size != null ? Integer.parseInt(size) : 1;
+
+		System.out.println("Buffer size: " + n + " MB");
+		return n;
 	}
 
 	private OhmDBImpl db() {
