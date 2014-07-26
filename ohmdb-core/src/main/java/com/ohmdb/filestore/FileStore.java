@@ -145,16 +145,16 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 			int sizeKB = (int) (dbFile.length() / 1024);
 			Check.state(sizeKB >= 0, "Database file is too big!");
 
-			System.out.println(String.format("Loading database from: %s (%s KB)...", filename, sizeKB));
+			print(String.format("Loading database from: %s (%s KB)...", filename, sizeKB));
 
 			this.READ_BUF = ByteBuffer.allocateDirect((sizeKB + 2) * 1024);
 
 			long time = System.currentTimeMillis();
 			loadData(loader);
-			System.out.println(String.format("Database loaded in %s ms", System.currentTimeMillis() - time));
+			print(String.format("Database loaded in %s ms", System.currentTimeMillis() - time));
 		} else {
 			this.READ_BUF = null;
-			System.out.println("Creating database: " + filename + "...");
+			print("Creating database: " + filename + "...");
 		}
 
 		if (!loadOnly) {
@@ -173,7 +173,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 			this.file = null;
 		}
 
-		System.out.println("Database is ready.");
+		print("Database is ready.");
 	}
 
 	private OhmDBImpl db() {
@@ -273,7 +273,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 	@Override
 	public synchronized void write(long key, Object value) throws IOException {
-		// System.out.println("WRITE " + key + "=" + value);
+		// print("WRITE " + key + "=" + value);
 		FilestoreTransaction tx = transaction();
 		tx.write(key, value);
 
@@ -388,11 +388,11 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 		Set<Long> theSlots = new HashSet<Long>();
 		long version = info.nextVersion(theSlots);
 
-		// System.out.println("VERSION OF " + key + " IS " + version);
+		// print("VERSION OF " + key + " IS " + version);
 
 		long address = it.next();
 
-		// System.out.println("writing " + key + " @ " + address);
+		// print("writing " + key + " @ " + address);
 		int start = BUF.position();
 
 		long second = size > 1 ? it.next() : -1;
@@ -518,7 +518,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	private void writeFirst(RandomAccessFile fc, long address) throws IOException {
 		assert address >= 0;
 
-		// System.out.println("===== WRITING first block at @" + address +
+		// print("===== WRITING first block at @" + address +
 		// hex(address));
 
 		fc.seek(BASE_ADDRESS + address * BLOCK_SIZE);
@@ -547,7 +547,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	private void writeNext(RandomAccessFile fc, long address, long prev, long next) throws IOException {
-		// System.out.println("next " + address + " " + prev + " " + next);
+		// print("next " + address + " " + prev + " " + next);
 
 		assert address >= 0;
 		assert debug("===== WRITING next block at @" + address);
@@ -635,7 +635,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	private void writeTxCounter(long txId) {
-		// System.out.println(" - WRITE LATEST TX #" + txId);
+		// print(" - WRITE LATEST TX #" + txId);
 		// nice(" - WRITE LATEST TX #" + txId);
 
 		TX_BUF.clear();
@@ -706,7 +706,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 			for (PersistInfo info : infos.entries()) {
 				VersionInfo latest = info.getLatestVersion();
-				// System.out.println(">> OCCUPIED " + latest.getSlots());
+				// print(">> OCCUPIED " + latest.getSlots());
 				zones.occupiedAll(latest.getSlots());
 				info.removeOldVersions();
 			}
@@ -739,7 +739,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	private boolean loadBlock(StoreLoader loader, ByteBuffer buf, long base, int offset) {
-		// System.out.println("load block @" + base + " : " + offset);
+		// print("load block @" + base + " : " + offset);
 
 		long address = base + offset;
 
@@ -813,8 +813,22 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 			buf.position((int) offset * BLOCK_SIZE);
 
-			long aa = negDecode(buf.getLong());
-			long bb = negDecode(buf.getLong());
+			long aa;
+			try {
+				aa = negDecode(buf.getLong());
+			} catch (Throwable e) {
+				System.out.println("AA " + offset + ":" + buf.position() + ":: " + e.getMessage());
+				throw Errors.rte("");
+			}
+
+			long bb;
+			try {
+				bb = negDecode(buf.getLong());
+			} catch (Throwable e) {
+				System.out.println("BB " + offset + ":" + buf.position() + ":: " + e.getMessage());
+				throw Errors.rte("");
+			}
+
 			hasMore = aa != bb;
 
 			long prev = aa - base;
@@ -915,12 +929,12 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	private boolean debug(String msg) {
-		// System.out.println(msg);
+		// print(msg);
 		return true;
 	}
 
 	private void nice(String msg) {
-		// System.out.println(msg);
+		// print(msg);
 	}
 
 	private void error(String msg) {
@@ -935,6 +949,9 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	private long negDecode(long n) {
+		if (n >= 0) {
+			throw Errors.rte("neg:" + n);
+		}
 		assert n < 0;
 		return n - Long.MIN_VALUE;
 	}
@@ -991,7 +1008,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 					try {
 						transacted = tx.isReadOnly() ? true : transact(txId, tx);
 					} catch (BufferFullException e) {
-						// System.out.println("*** BUFFER FULL! ***");
+						// print("*** BUFFER FULL! ***");
 						transacted = false;
 						if (currentTxs.isEmpty()) {
 							throw Errors.rte("The transaction is too big!");
@@ -1008,7 +1025,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 				debug("TRANSACTING N=" + n);
 
-				// System.out.println("====================================");
+				// print("====================================");
 				// if there is at least one change in transactions
 				if (aggregatedSize > 0) {
 					writeTx(txId);
@@ -1034,8 +1051,12 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 			}
 		}
 
-		System.out.println("File store thread finished.");
+		print("File store thread finished.");
 		finished.set(true);
+	}
+
+	private void print(String msg) {
+		// System.out.println(msg);
 	}
 
 	private boolean dbExists() {
