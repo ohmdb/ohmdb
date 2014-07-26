@@ -39,6 +39,7 @@ import org.testng.annotations.DataProvider;
 import com.google.common.base.Objects;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.ReadOnlyRelation;
+import com.ohmdb.api.DB;
 import com.ohmdb.api.Links;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.ManyToOne;
@@ -474,6 +475,7 @@ public abstract class TestCommons {
 
 		ids0to10 = Nums.fromTo(0, 10);
 
+		DB.setDefaultDb(db);
 		ready();
 	}
 

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.api.DB;
 import com.ohmdb.api.Table;
 import com.ohmdb.test.Person;
 import com.ohmdb.test.Person2;
@@ -33,17 +34,23 @@ import com.ohmdb.test.TestCommons;
 public class CRUDTest extends TestCommons {
 
 	@Test
+	public void minimalisticCRUD() {
+		long id = DB.insert(new Person("John Doe", 33));
+	}
+
+	@Test
 	public void shouldCRUD() {
 		Table<Person> persons = personsTable();
 
 		/*** INSERT ***/
 
 		long id0 = persons.insert(person("john", 29));
-		long id1 = persons.insert(person("bill", 13));
+
+		long id1 = db.insert(person("bill", 13));
 
 		eq(persons.size(), 2);
 
-		Person p0 = persons.get(id0);
+		Person p0 = DB.get(id0);
 		eq(p0.name, "john");
 		eq(p0.age, 29);
 
@@ -55,7 +62,7 @@ public class CRUDTest extends TestCommons {
 
 		persons.set(id0, "name", "doe");
 
-		Person p2 = persons.get(id0);
+		Person p2 = db.get(id0);
 		eq(p2.name, "doe");
 		eq(p2.age, 29);
 
