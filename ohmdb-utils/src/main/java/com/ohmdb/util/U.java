@@ -366,7 +366,12 @@ public class U {
 	}
 
 	public static void delete(String filename) {
-		new File(filename).delete();
+		File f = new File(filename);
+
+		if (f.exists()) {
+			Check.state(f.delete(), "Cannot delete file: " + filename);
+			Check.state(!new File(filename).exists(), "Didn't delete file: " + filename);
+		}
 	}
 
 	public static <T> T[] expand(T[] arr, T item) {
