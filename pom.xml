@@ -57,6 +57,7 @@
 		<module>ohmdb-core</module>
 		<module>ohmdb-demo</module>
 		<module>ohmdb-test</module>
+		<module>ohmdb-dsl</module>
 	</modules>
 
 	<build>
