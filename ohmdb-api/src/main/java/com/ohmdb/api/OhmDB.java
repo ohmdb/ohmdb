@@ -110,4 +110,12 @@ public class OhmDB {
 		DEFAULT_DB = defaultDb;
 	}
 
+	public static <T> Table<T> table(Class<T> clazz) {
+		return defaultDb().table(clazz);
+	}
+
+	public static <T> Table<T> table(String name) {
+		return defaultDb().table(name);
+	}
+
 }
