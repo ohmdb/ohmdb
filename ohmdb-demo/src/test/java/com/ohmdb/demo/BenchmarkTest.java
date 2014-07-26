@@ -29,7 +29,7 @@ import com.ohmdb.api.Ids;
 import com.ohmdb.api.Join;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Table;
 import com.ohmdb.util.Measure;
 
@@ -54,7 +54,7 @@ public class BenchmarkTest {
 
 		long[] all = makeFriends(usersN, friendsN / 2);
 
-		OhmDB db = Ohm.db(DB_FILENAME);
+		Db db = Ohm.db(DB_FILENAME);
 
 		joinNth(db, usersN, all, 1);
 		joinNth(db, usersN, all, 2);
@@ -65,7 +65,7 @@ public class BenchmarkTest {
 	}
 
 	private static void insert(int usersN) {
-		OhmDB db = Ohm.db(DB_FILENAME);
+		Db db = Ohm.db(DB_FILENAME);
 
 		Table<DemoUser> users = db.table(DemoUser.class);
 
@@ -86,7 +86,7 @@ public class BenchmarkTest {
 	}
 
 	private static void update(int usersN) {
-		OhmDB db = Ohm.db(DB_FILENAME);
+		Db db = Ohm.db(DB_FILENAME);
 
 		Table<DemoUser> users = db.table(DemoUser.class);
 
@@ -107,7 +107,7 @@ public class BenchmarkTest {
 	}
 
 	private static void set(int usersN) {
-		OhmDB db = Ohm.db(DB_FILENAME);
+		Db db = Ohm.db(DB_FILENAME);
 
 		Table<DemoUser> users = db.table(DemoUser.class);
 
@@ -123,7 +123,7 @@ public class BenchmarkTest {
 		System.out.println();
 	}
 
-	private static void joinNth(OhmDB db, int usersN, long[] all, int n) {
+	private static void joinNth(Db db, int usersN, long[] all, int n) {
 		ManyToMany<Object, Object> fr = db.manyToManySymmetric(null, "friends", null);
 
 		Ids<Object> x = db.all(all);
@@ -176,7 +176,7 @@ public class BenchmarkTest {
 	}
 
 	private static long[] makeFriends(int usersN, int friendsN) {
-		OhmDB db = Ohm.db(DB_FILENAME);
+		Db db = Ohm.db(DB_FILENAME);
 		ManyToMany<Object, Object> fr = db.manyToManySymmetric(null, "friends", null);
 
 		Measure.start(usersN * friendsN);

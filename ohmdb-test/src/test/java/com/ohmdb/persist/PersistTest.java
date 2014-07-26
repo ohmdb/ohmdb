@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.testng.annotations.Test;
 
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Table;
 import com.ohmdb.api.Transaction;
 import com.ohmdb.api.TransactionException;
@@ -40,7 +40,7 @@ public class PersistTest extends TestCommons {
 
 		/*** WRITE DB 1 ***/
 
-		OhmDB db = Ohm.db(DB_FILE2);
+		Db db = Ohm.db(DB_FILE2);
 		Table<Person> table = db.table(Person.class);
 
 		assert 0 == table.insert(person("a", 100));
@@ -57,7 +57,7 @@ public class PersistTest extends TestCommons {
 
 		/*** READ DB 2 ***/
 
-		OhmDB db2 = Ohm.db(DB_FILE2);
+		Db db2 = Ohm.db(DB_FILE2);
 		Table<Person> table2 = db2.table(Person.class);
 
 		eq(table2.size(), 2);
@@ -84,7 +84,7 @@ public class PersistTest extends TestCommons {
 
 		/*** READ DB 3 ***/
 
-		OhmDB db3 = Ohm.db(DB_FILE2);
+		Db db3 = Ohm.db(DB_FILE2);
 		Table<Person> table3 = db3.table(Person.class);
 
 		eq(table3.size(), 2);
@@ -95,7 +95,7 @@ public class PersistTest extends TestCommons {
 
 	@Test
 	public void shouldPersistToFileMini() throws IOException, TransactionException {
-		OhmDB db = Ohm.db(DB_FILE2);
+		Db db = Ohm.db(DB_FILE2);
 		Table<Person> table = db.table(Person.class);
 
 		assert 0 == table.insert(person("a", 100));
@@ -105,7 +105,7 @@ public class PersistTest extends TestCommons {
 
 		/*** READ DB 2 ***/
 
-		OhmDB db2 = Ohm.db(DB_FILE2);
+		Db db2 = Ohm.db(DB_FILE2);
 		Table<Person> table2 = db2.table(Person.class);
 
 		Transaction txx = db2.startTransaction();
@@ -133,7 +133,7 @@ public class PersistTest extends TestCommons {
 		U.sleep(1000);
 		System.out.println("=============================");
 
-		OhmDB db3 = Ohm.db(DB_FILE2);
+		Db db3 = Ohm.db(DB_FILE2);
 
 		Table<Person> table3 = db3.table(Person.class);
 		eq(table3.size(), 1);

@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 
 public class Ohm {
 
-	public static OhmDB db(String filename) {
+	public static Db db(String filename) {
 		try {
 			Class<?> cls = Class.forName("com.ohmdb.factory.OhmDbFactory");
 
@@ -47,8 +47,8 @@ public class Ohm {
 						throw new RuntimeException("Cannot initialize database!", e);
 					}
 
-					if (db instanceof OhmDB) {
-						return (OhmDB) db;
+					if (db instanceof Db) {
+						return (Db) db;
 					} else {
 						throw new RuntimeException(
 								"The factory method in com.ohmdb.factory.OhmDbFactory returned invalid value, expected OhmDB instance!");
@@ -65,7 +65,7 @@ public class Ohm {
 		}
 	}
 
-	public static OhmDB db() {
+	public static Db db() {
 		return db(null);
 	}
 

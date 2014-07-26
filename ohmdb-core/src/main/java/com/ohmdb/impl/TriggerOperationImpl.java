@@ -20,7 +20,7 @@ package com.ohmdb.impl;
  * #L%
  */
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Trigger;
 import com.ohmdb.api.TriggerAction;
 import com.ohmdb.api.TriggerCreator;
@@ -28,12 +28,12 @@ import com.ohmdb.api.TriggerOperation;
 
 public class TriggerOperationImpl<E> implements TriggerOperation<E> {
 
-	private final OhmDB db;
+	private final Db db;
 	private final Class<E> type;
 	private final boolean before;
 	private final TriggerAction[] actions;
 
-	public TriggerOperationImpl(OhmDB db, Class<E> type, boolean before, TriggerAction... actions) {
+	public TriggerOperationImpl(Db db, Class<E> type, boolean before, TriggerAction... actions) {
 		this.db = db;
 		this.type = type;
 		this.before = before;

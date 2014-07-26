@@ -22,19 +22,19 @@ package com.ohmdb.impl;
 
 import java.lang.ref.WeakReference;
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 
 public class ShutdownThread extends Thread {
 
-	private final WeakReference<OhmDB> dbRef;
+	private final WeakReference<Db> dbRef;
 
-	public ShutdownThread(WeakReference<OhmDB> dbRef) {
+	public ShutdownThread(WeakReference<Db> dbRef) {
 		this.dbRef = dbRef;
 	}
 
 	@Override
 	public void run() {
-		OhmDB db = dbRef.get();
+		Db db = dbRef.get();
 
 		if (db != null) {
 			db.shutdown();

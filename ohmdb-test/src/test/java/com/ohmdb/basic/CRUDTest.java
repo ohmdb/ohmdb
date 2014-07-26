@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import com.ohmdb.api.DB;
+import com.ohmdb.api.OhmDB;
 import com.ohmdb.api.Table;
 import com.ohmdb.test.Person;
 import com.ohmdb.test.Person2;
@@ -45,7 +45,7 @@ public class CRUDTest extends TestCommons {
 
 		eq(persons.size(), 2);
 
-		Person p0 = DB.get(id0);
+		Person p0 = OhmDB.get(id0);
 		eq(p0.name, "john");
 		eq(p0.age, 29);
 

@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Table;
 import com.ohmdb.statistical.RelationChecker;
 import com.ohmdb.statistical.TableChecker;
@@ -38,7 +38,7 @@ public class DatabaseCheck extends TestCommons {
 
 	private static final String FILENAME = "/tmp/check.db";
 
-	private OhmDB db;
+	private Db db;
 
 	private final int reloadInterval;
 
@@ -170,7 +170,7 @@ public class DatabaseCheck extends TestCommons {
 		System.out.println("############# VALIDATION DONE! #############");
 	}
 
-	public synchronized OhmDB db() {
+	public synchronized Db db() {
 		return db;
 	}
 

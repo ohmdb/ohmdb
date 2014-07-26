@@ -41,7 +41,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.TransactionListener;
 import com.ohmdb.codec.StoreCodec;
 import com.ohmdb.impl.OhmDBImpl;
@@ -126,11 +126,11 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 	private final RandomAccessFile file;
 
-	private final WeakReference<OhmDB> dbRef;
+	private final WeakReference<Db> dbRef;
 
 	@SuppressWarnings("unchecked")
 	public FileStore(String filename, StoreLoader loader, StoreCodec<?> valueCodec, OhmDBStats stats, boolean loadOnly,
-			WeakReference<OhmDB> dbRef) {
+			WeakReference<Db> dbRef) {
 		this.filename = filename;
 		this.valueCodec = (StoreCodec<Object>) valueCodec;
 		this.stats = stats;
@@ -1022,7 +1022,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 		} catch (Throwable e) {
 			if (running.get()) {
-				OhmDB db = dbRef.get();
+				Db db = dbRef.get();
 				if (db != null) {
 					((OhmDBImpl) db).failure(e);
 				}

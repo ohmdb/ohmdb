@@ -41,7 +41,7 @@ import com.ohmdb.api.Join;
 import com.ohmdb.api.JoinMode;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.ManyToOne;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.OneToMany;
 import com.ohmdb.api.OneToOne;
 import com.ohmdb.api.Op;
@@ -77,7 +77,7 @@ import com.ohmdb.util.Errors;
 import com.ohmdb.util.U;
 import com.ohmdb.util.UTILS;
 
-public class OhmDBImpl implements OhmDB, DataSource {
+public class OhmDBImpl implements Db, DataSource {
 
 	private final StoreCodec<byte[]> VALUE_CODEC = new ByteArrCodec();
 
@@ -99,7 +99,7 @@ public class OhmDBImpl implements OhmDB, DataSource {
 
 	private final LinkMatcher linkMatcher = new DefaultLinkMatcher();
 
-	private final WeakReference<OhmDB> dbRef;
+	private final WeakReference<Db> dbRef;
 
 	private boolean isDown = false;
 
@@ -109,7 +109,7 @@ public class OhmDBImpl implements OhmDB, DataSource {
 	private Throwable error;
 
 	public OhmDBImpl(String filename) {
-		dbRef = new WeakReference<OhmDB>(this);
+		dbRef = new WeakReference<Db>(this);
 
 		DataLoader loader = new DataLoader();
 		this.store = new FileStore(filename, loader, VALUE_CODEC, stats, false, dbRef);
@@ -122,7 +122,7 @@ public class OhmDBImpl implements OhmDB, DataSource {
 	}
 
 	public OhmDBImpl() {
-		dbRef = new WeakReference<OhmDB>(this);
+		dbRef = new WeakReference<Db>(this);
 
 		this.store = new NoDataStore(this);
 

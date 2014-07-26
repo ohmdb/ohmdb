@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.testng.Assert;
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.util.U;
 
 public class ThreadPack {
@@ -107,7 +107,7 @@ public class ThreadPack {
 		}
 	}
 
-	public static void finishFirst(OhmDB db, ThreadPack... packs) {
+	public static void finishFirst(Db db, ThreadPack... packs) {
 		while (true) {
 			for (int i = 0; i < packs.length; i++) {
 				ThreadPack pack = packs[i];

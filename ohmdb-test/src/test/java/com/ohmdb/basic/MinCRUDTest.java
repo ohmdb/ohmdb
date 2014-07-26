@@ -22,7 +22,7 @@ package com.ohmdb.basic;
 
 import org.testng.annotations.Test;
 
-import com.ohmdb.api.DB;
+import com.ohmdb.api.OhmDB;
 import com.ohmdb.test.Person;
 import com.ohmdb.test.TestCommons;
 
@@ -30,7 +30,7 @@ public class MinCRUDTest extends TestCommons {
 
 	@Test
 	public void minimalisticCRUD() {
-		long id = DB.insert(new Person("John Doe", 33));
+		long id = OhmDB.insert(new Person("John Doe", 33));
 		eq(id, 0);
 	}
 

@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 import com.ohmdb.abstracts.Any;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.impl.OhmDBImpl;
 import com.ohmdb.join.JoinBuilder;
 import com.ohmdb.join.JoinConfig;
@@ -44,7 +44,7 @@ public class FriendsPerfTest extends TestCommons {
 
 	@Test(timeOut = 60000)
 	public void shouldMatchNthConnections() throws Exception {
-		OhmDB db2 = Ohm.db();
+		Db db2 = Ohm.db();
 		LinkMatcher matcher = ((OhmDBImpl) db2).getLinkMatcher();
 
 		RWRelation rel = relation(db2, "friends");

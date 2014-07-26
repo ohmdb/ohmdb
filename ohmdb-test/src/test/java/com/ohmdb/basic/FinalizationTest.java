@@ -22,7 +22,7 @@ package com.ohmdb.basic;
 
 import org.testng.annotations.Test;
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.impl.OhmDBImpl;
 
 public class FinalizationTest {
@@ -30,7 +30,7 @@ public class FinalizationTest {
 	@Test
 	public void shouldFinalize() {
 		for (int i = 0; i < 100; i++) {
-			OhmDB db = new OhmDBImpl();
+			Db db = new OhmDBImpl();
 		}
 	}
 

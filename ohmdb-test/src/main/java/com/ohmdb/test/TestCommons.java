@@ -39,12 +39,12 @@ import org.testng.annotations.DataProvider;
 import com.google.common.base.Objects;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.ReadOnlyRelation;
-import com.ohmdb.api.DB;
+import com.ohmdb.api.OhmDB;
 import com.ohmdb.api.Links;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.ManyToOne;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.OneToMany;
 import com.ohmdb.api.Table;
 import com.ohmdb.api.Transaction;
@@ -81,7 +81,7 @@ public abstract class TestCommons {
 
 	public static Table<?> TBL3 = new MockTable("TBL3", Nums.arrFromTo(0, 10));
 
-	protected WeakReference<OhmDB> DB_REF;
+	protected WeakReference<Db> DB_REF;
 
 	protected static Numbers ids0to10;
 
@@ -95,7 +95,7 @@ public abstract class TestCommons {
 
 	protected Transaction TX;
 
-	protected OhmDB db;
+	protected Db db;
 	protected Table<Person> persons;
 	protected Table<Book> books;
 	protected Table<Tag> tags;
@@ -460,7 +460,7 @@ public abstract class TestCommons {
 	protected void reload() {
 		db.shutdown();
 		db = Ohm.db(DB_FILE);
-		DB_REF = new WeakReference<OhmDB>(db);
+		DB_REF = new WeakReference<Db>(db);
 	}
 
 	@BeforeMethod
@@ -471,11 +471,11 @@ public abstract class TestCommons {
 		U.delete(DB_FILE2);
 
 		db = Ohm.db(DB_FILE);
-		DB_REF = new WeakReference<OhmDB>(db);
+		DB_REF = new WeakReference<Db>(db);
 
 		ids0to10 = Nums.fromTo(0, 10);
 
-		DB.setDefaultDb(db);
+		OhmDB.setDefaultDb(db);
 		ready();
 	}
 
@@ -650,15 +650,15 @@ public abstract class TestCommons {
 		return ln(n);
 	}
 
-	protected static RWRelation relation(OhmDB db, Table<?> from, String name, Table<?> to) {
+	protected static RWRelation relation(Db db, Table<?> from, String name, Table<?> to) {
 		return ((OhmDBImpl) db).relation(from, name, to);
 	}
 
-	public static RWRelation relation(OhmDB db, String name) {
+	public static RWRelation relation(Db db, String name) {
 		return ((OhmDBImpl) db).relation(name);
 	}
 
-	public ReadOnlyRelation rel1(OhmDB db) {
+	public ReadOnlyRelation rel1(Db db) {
 		RWRelation rel = relation(db, TBL1, "rel1", TBL2);
 
 		UTILS.link(rel, 1, nums(20, 30));
@@ -668,7 +668,7 @@ public abstract class TestCommons {
 		return rel;
 	}
 
-	public ReadOnlyRelation rel2(OhmDB db) {
+	public ReadOnlyRelation rel2(Db db) {
 		RWRelation rel = relation(db, TBL2, "rel2", TBL3);
 
 		UTILS.link(rel, 20, nums(200, 2000));
@@ -679,7 +679,7 @@ public abstract class TestCommons {
 		return rel;
 	}
 
-	public ReadOnlyRelation rel3(OhmDB db) {
+	public ReadOnlyRelation rel3(Db db) {
 		RWRelation rel = relation(db, TBL1, "rel3", TBL3);
 
 		UTILS.link(rel, 1, nums(100, 2000));
@@ -690,7 +690,7 @@ public abstract class TestCommons {
 		return rel;
 	}
 
-	public RWRelation rel10x10(String name, int fromBase, int toBase, OhmDB db, Table<?> tbl1, Table<?> tbl2) {
+	public RWRelation rel10x10(String name, int fromBase, int toBase, Db db, Table<?> tbl1, Table<?> tbl2) {
 		RWRelation rel = relation(db, tbl1, name, tbl2);
 
 		for (int i = 0; i < 10; i++) {
@@ -702,15 +702,15 @@ public abstract class TestCommons {
 		return rel;
 	}
 
-	public ReadOnlyRelation[] getR1R2(OhmDB db) {
+	public ReadOnlyRelation[] getR1R2(Db db) {
 		return new ReadOnlyRelation[] { rel1(db), rel2(db) };
 	}
 
-	public ReadOnlyRelation[] getR1R2R3(OhmDB db) {
+	public ReadOnlyRelation[] getR1R2R3(Db db) {
 		return new ReadOnlyRelation[] { rel1(db), rel2(db), rel3(db) };
 	}
 
-	public ReadOnlyRelation randomRel(OhmDB db, String name, Table<?> tbl1, Table<?> tbl2, int max) {
+	public ReadOnlyRelation randomRel(Db db, String name, Table<?> tbl1, Table<?> tbl2, int max) {
 		RWRelation rel = relation(db, tbl1, name, tbl2);
 
 		rel.clear();
@@ -722,7 +722,7 @@ public abstract class TestCommons {
 		return rel;
 	}
 
-	public ReadOnlyRelation[] randomRels(OhmDB db, int max) {
+	public ReadOnlyRelation[] randomRels(Db db, int max) {
 		ReadOnlyRelation[] rels = new ReadOnlyRelation[Nums.rnd(2, 3)];
 
 		Table<?> tbl = new MockTable("TBL", Nums.arrFromTo(0, 1000));

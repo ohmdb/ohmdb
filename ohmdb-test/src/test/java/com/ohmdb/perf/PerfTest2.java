@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.testng.annotations.Test;
 
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Table;
 import com.ohmdb.api.Transaction;
 import com.ohmdb.test.Person;
@@ -40,7 +40,7 @@ public class PerfTest2 extends TestCommons {
 	@Test
 	public void shouldInsertFastInMemInTx() throws Exception {
 
-		OhmDB db2 = Ohm.db();
+		Db db2 = Ohm.db();
 
 		Table<Person> persons = db2.table(Person.class);
 
@@ -68,7 +68,7 @@ public class PerfTest2 extends TestCommons {
 	@Test
 	public void shouldInsertFastInMemNoTx() throws Exception {
 
-		OhmDB db2 = Ohm.db();
+		Db db2 = Ohm.db();
 
 		Table<Person> persons = db2.table(Person.class);
 

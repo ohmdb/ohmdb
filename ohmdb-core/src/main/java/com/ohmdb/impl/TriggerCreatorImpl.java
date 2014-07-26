@@ -22,7 +22,7 @@ package com.ohmdb.impl;
 
 import java.util.Arrays;
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.TriggerAction;
 import com.ohmdb.api.TriggerCreator;
 import com.ohmdb.api.TriggerOperation;
@@ -31,12 +31,12 @@ import com.ohmdb.util.U;
 
 public class TriggerCreatorImpl<E> implements TriggerCreator<E> {
 
-	private final OhmDB db;
+	private final Db db;
 	private final Class<E> type;
 	private final boolean before;
 	private final TriggerAction[] actions;
 
-	public TriggerCreatorImpl(OhmDB db, Class<E> type, boolean before, TriggerAction... actions) {
+	public TriggerCreatorImpl(Db db, Class<E> type, boolean before, TriggerAction... actions) {
 		this.db = db;
 		this.type = type;
 		this.before = before;

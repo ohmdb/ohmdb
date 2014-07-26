@@ -22,7 +22,7 @@ package com.ohmdb.dsl;
 
 import com.ohmdb.api.JoinResult;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.OneToMany;
 import com.ohmdb.api.Search;
 import com.ohmdb.api.Table;
@@ -42,7 +42,7 @@ class Item {
 
 public class ExamplesTest {
 
-	OhmDB db2 = Ohm.db("my.db");
+	Db db2 = Ohm.db("my.db");
 	Table<Tag> tags = db2.table(Tag.class);
 	Item item1 = null;
 	Item item2 = null;
@@ -53,7 +53,7 @@ public class ExamplesTest {
 
 		// Easy to use|
 
-		OhmDB db = Ohm.db("my.db");
+		Db db = Ohm.db("my.db");
 		Table<Item> items = db.table(Item.class);
 		long id = items.insert(new Item("item1"));
 

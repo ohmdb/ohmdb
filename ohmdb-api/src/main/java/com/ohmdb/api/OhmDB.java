@@ -20,56 +20,94 @@ package com.ohmdb.api;
  * #L%
  */
 
-public interface OhmDB {
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-	<T> Table<T> table(Class<T> clazz);
+public class OhmDB {
 
-	<T> Table<T> table(String name);
+	private static Db DEFAULT_DB = null;
 
-	<FROM, TO> ManyToOne<FROM, TO> manyToOne(Table<FROM> from, String name, Table<TO> to);
+	public static Db db(String filename) {
+		try {
+			Class<?> cls = Class.forName("com.ohmdb.factory.OhmDbFactory");
 
-	<FROM, TO> OneToMany<FROM, TO> oneToMany(Table<FROM> from, String name, Table<TO> to);
+			for (Method method : cls.getDeclaredMethods()) {
+				int modif = method.getModifiers();
+				String name = method.getName();
+				Class<?>[] params = method.getParameterTypes();
 
-	<FROM, TO> ManyToMany<FROM, TO> manyToMany(Table<FROM> from, String name, Table<TO> to);
+				if (java.lang.reflect.Modifier.isStatic(modif) && !name.equals("main") && params.length == 1
+						&& params[0].equals(String.class)) {
+					Object db;
+					try {
+						db = method.invoke(null, filename);
+					} catch (IllegalAccessException e) {
+						throw new RuntimeException("Cannot invoke factory method in com.ohmdb.factory.OhmDbFactory!", e);
+					} catch (IllegalArgumentException e) {
+						throw new RuntimeException("Cannot invoke factory method in com.ohmdb.factory.OhmDbFactory!", e);
+					} catch (InvocationTargetException e) {
+						throw new RuntimeException("Cannot initialize database!", e);
+					}
 
-	<FROM_TO> ManyToMany<FROM_TO, FROM_TO> manyToManySymmetric(Table<FROM_TO> from, String name, Table<FROM_TO> to);
+					if (db instanceof Db) {
+						return (Db) db;
+					} else {
+						throw new RuntimeException(
+								"The factory method in com.ohmdb.factory.OhmDbFactory returned invalid value, expected OhmDB instance!");
+					}
+				}
+			}
 
-	<FROM, TO> OneToOne<FROM, TO> oneToOne(Table<FROM> from, String name, Table<TO> to);
+			throw new RuntimeException("Cannot find factory method in com.ohmdb.factory.OhmDbFactory!");
 
-	<FROM_TO> OneToOne<FROM_TO, FROM_TO> oneToOneSymmetric(Table<FROM_TO> from, String name, Table<FROM_TO> to);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Cannot find com.ohmdb.factory.OhmDbFactory!");
+		} catch (SecurityException e) {
+			throw new RuntimeException("Cannot access com.ohmdb.factory.OhmDbFactory!", e);
+		}
+	}
 
-	<FROM, TO> Join join(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to);
+	public static Db db() {
+		return db(null);
+	}
 
-	<FROM, TO> Join leftJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to);
+	public static long insert(Object entity) {
+		return defaultDb().insert(entity);
+	}
 
-	<FROM, TO> Join rightJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to);
+	public static void update(Object entity) {
+		defaultDb().update(entity);
+	}
 
-	<FROM, TO> Join fullJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to);
+	public static <T> T get(long id) {
+		return defaultDb().get(id);
+	}
 
-	<T> TriggerCreator<T> before(Class<T> type);
+	public static void delete(long id) {
+		defaultDb().delete(id);
+	}
 
-	<T> TriggerCreator<T> after(Class<T> type);
+	public static void shutdown() {
+		defaultDb().shutdown();
+	}
 
-	<T> void trigger(Class<T> type, TriggerAction action, Trigger<T> trigger);
+	public static <T> TriggerCreator<T> before(Class<T> type) {
+		return defaultDb().before(type);
+	}
 
-	Transaction startTransaction();
+	public static <T> TriggerCreator<T> after(Class<T> type) {
+		return defaultDb().after(type);
+	}
 
-	long insert(Object entity);
+	public static synchronized Db defaultDb() {
+		if (DEFAULT_DB == null) {
+			DEFAULT_DB = db("ohm.db");
+		}
+		return DEFAULT_DB;
+	}
 
-	void delete(long id);
-
-	void update(Object entity);
-	
-	<T> T get(long id);
-
-	<T> Parameter<T> param(String name, Class<T> type);
-
-	SearchCriteria crit(String columnName, Op op, Object value);
-
-	<T> Ids<T> ids(long... ids);
-
-	<T> Ids<T> all(long... ids);
-
-	void shutdown();
+	public static synchronized void setDefaultDb(Db defaultDb) {
+		DEFAULT_DB = defaultDb;
+	}
 
 }

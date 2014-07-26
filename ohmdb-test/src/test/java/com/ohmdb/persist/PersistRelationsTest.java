@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Table;
 import com.ohmdb.numbers.Numbers;
 import com.ohmdb.test.Book;
@@ -41,7 +41,7 @@ public class PersistRelationsTest extends TestCommons {
 
 		/*** WRITE DB 1 ***/
 
-		OhmDB db = Ohm.db(DB_FILE);
+		Db db = Ohm.db(DB_FILE);
 
 		Table<Person> persons = db.table(Person.class);
 
@@ -67,7 +67,7 @@ public class PersistRelationsTest extends TestCommons {
 		
 		/*** READ DB 2 ***/
 
-		OhmDB db2 = Ohm.db(DB_FILE);
+		Db db2 = Ohm.db(DB_FILE);
 
 		Table<Person> persons2 = db2.table(Person.class);
 		Table<Book> books2 = db2.table(Book.class);

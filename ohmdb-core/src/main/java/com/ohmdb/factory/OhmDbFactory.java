@@ -20,12 +20,12 @@ package com.ohmdb.factory;
  * #L%
  */
 
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.impl.OhmDBImpl;
 
 public class OhmDbFactory {
 
-	public static OhmDB newInstance(String filename) {
+	public static Db newInstance(String filename) {
 		return filename != null ? new OhmDBImpl(filename) : new OhmDBImpl();
 	}
 
