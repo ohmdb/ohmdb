@@ -58,6 +58,7 @@
 		<module>ohmdb-demo</module>
 		<module>ohmdb-test</module>
 		<module>ohmdb-dsl</module>
+		<module>ohmdb-internal-api</module>
 	</modules>
 
 	<build>
