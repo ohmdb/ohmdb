@@ -59,6 +59,8 @@ public interface OhmDB {
 	void delete(long id);
 
 	void update(Object entity);
+	
+	<T> T get(long id);
 
 	<T> Parameter<T> param(String name, Class<T> type);
 

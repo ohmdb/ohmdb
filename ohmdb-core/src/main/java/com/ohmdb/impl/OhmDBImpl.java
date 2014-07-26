@@ -488,9 +488,17 @@ public class OhmDBImpl implements OhmDB, DataSource {
 		this.error = e;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public long insert(Object entity) {
-		throw Errors.notReady();
+		Table<Object> tbl = (Table<Object>) table(entity.getClass());
+		return tbl.insert(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(long id) {
+		return (T) address(id).table.get(id);
 	}
 
 }
