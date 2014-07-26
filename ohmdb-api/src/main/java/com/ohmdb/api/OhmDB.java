@@ -20,56 +20,9 @@ package com.ohmdb.api;
  * #L%
  */
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 public class OhmDB {
 
 	private static Db DEFAULT_DB = null;
-
-	public static Db db(String filename) {
-		try {
-			Class<?> cls = Class.forName("com.ohmdb.factory.OhmDbFactory");
-
-			for (Method method : cls.getDeclaredMethods()) {
-				int modif = method.getModifiers();
-				String name = method.getName();
-				Class<?>[] params = method.getParameterTypes();
-
-				if (java.lang.reflect.Modifier.isStatic(modif) && !name.equals("main") && params.length == 1
-						&& params[0].equals(String.class)) {
-					Object db;
-					try {
-						db = method.invoke(null, filename);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException("Cannot invoke factory method in com.ohmdb.factory.OhmDbFactory!", e);
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException("Cannot invoke factory method in com.ohmdb.factory.OhmDbFactory!", e);
-					} catch (InvocationTargetException e) {
-						throw new RuntimeException("Cannot initialize database!", e);
-					}
-
-					if (db instanceof Db) {
-						return (Db) db;
-					} else {
-						throw new RuntimeException(
-								"The factory method in com.ohmdb.factory.OhmDbFactory returned invalid value, expected OhmDB instance!");
-					}
-				}
-			}
-
-			throw new RuntimeException("Cannot find factory method in com.ohmdb.factory.OhmDbFactory!");
-
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Cannot find com.ohmdb.factory.OhmDbFactory!");
-		} catch (SecurityException e) {
-			throw new RuntimeException("Cannot access com.ohmdb.factory.OhmDbFactory!", e);
-		}
-	}
-
-	public static Db db() {
-		return db(null);
-	}
 
 	public static long insert(Object entity) {
 		return defaultDb().insert(entity);
@@ -101,13 +54,87 @@ public class OhmDB {
 
 	public static synchronized Db defaultDb() {
 		if (DEFAULT_DB == null) {
-			DEFAULT_DB = db("ohm.db");
+			DEFAULT_DB = Ohm.db("ohm.db");
 		}
 		return DEFAULT_DB;
 	}
 
 	public static synchronized void setDefaultDb(Db defaultDb) {
 		DEFAULT_DB = defaultDb;
+	}
+
+	public static <T> Table<T> table(Class<T> clazz) {
+		return defaultDb().table(clazz);
+	}
+
+	public static <T> Table<T> table(String name) {
+		return defaultDb().table(name);
+	}
+
+	public static <FROM, TO> ManyToOne<FROM, TO> manyToOne(Table<FROM> from, String name, Table<TO> to) {
+		return defaultDb().manyToOne(from, name, to);
+	}
+
+	public static <FROM, TO> OneToMany<FROM, TO> oneToMany(Table<FROM> from, String name, Table<TO> to) {
+		return defaultDb().oneToMany(from, name, to);
+	}
+
+	public static <FROM, TO> ManyToMany<FROM, TO> manyToMany(Table<FROM> from, String name, Table<TO> to) {
+		return defaultDb().manyToMany(from, name, to);
+	}
+
+	public static <FROM_TO> ManyToMany<FROM_TO, FROM_TO> manyToManySymmetric(Table<FROM_TO> from, String name,
+			Table<FROM_TO> to) {
+		return defaultDb().manyToManySymmetric(from, name, to);
+	}
+
+	public static <FROM, TO> OneToOne<FROM, TO> oneToOne(Table<FROM> from, String name, Table<TO> to) {
+		return defaultDb().oneToOne(from, name, to);
+	}
+
+	public static <FROM_TO> OneToOne<FROM_TO, FROM_TO> oneToOneSymmetric(Table<FROM_TO> from, String name,
+			Table<FROM_TO> to) {
+		return defaultDb().oneToOneSymmetric(from, name, to);
+	}
+
+	public static <FROM, TO> Join join(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
+		return defaultDb().join(from, relation, to);
+	}
+
+	public static <FROM, TO> Join leftJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
+		return defaultDb().leftJoin(from, relation, to);
+	}
+
+	public static <FROM, TO> Join rightJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
+		return defaultDb().rightJoin(from, relation, to);
+	}
+
+	public static <FROM, TO> Join fullJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
+		return defaultDb().fullJoin(from, relation, to);
+	}
+
+	public static <T> void trigger(Class<T> type, TriggerAction action, Trigger<T> trigger) {
+		defaultDb().trigger(type, action, trigger);
+	}
+
+	public static Transaction startTransaction() {
+		return defaultDb().startTransaction();
+	}
+
+	public static <T> Parameter<T> param(String name, Class<T> type) {
+		return defaultDb().param(name, type);
+	}
+
+	public static SearchCriteria crit(String columnName, Op op, Object value) {
+		return defaultDb().crit(columnName, op, value);
+	}
+
+	public static <T> Ids<T> ids(long... ids) {
+		return defaultDb().ids(ids);
+	}
+
+	public static <T> Ids<T> all(long... ids) {
+		return defaultDb().all(ids);
 	}
 
 }

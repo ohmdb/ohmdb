@@ -30,8 +30,49 @@ public class MinCRUDTest extends TestCommons {
 
 	@Test
 	public void minimalisticCRUD() {
-		long id = OhmDB.insert(new Person("John Doe", 33));
-		eq(id, 0);
+
+		/*** INSERT ***/
+
+		Person p1 = new Person("Jane", 32);
+		long id1 = OhmDB.insert(p1);
+		eq(id1, 0);
+
+		eq(OhmDB.table(Person.class).size(), 1);
+
+		Person p2 = new Person("Mary", 35);
+		long id2 = OhmDB.insert(p2);
+		eq(id2, 1);
+
+		eq(OhmDB.defaultDb().table(Person.class).size(), 2);
+
+		eq(((Person) OhmDB.get(id1)).name, "Jane");
+		eq(((Person) OhmDB.get(id1)).age, 32);
+
+		eq(((Person) OhmDB.get(id2)).name, "Mary");
+		eq(((Person) OhmDB.get(id2)).age, 35);
+
+		eq(OhmDB.get(id1), p1);
+		eq(OhmDB.get(id2), p2);
+
+		/*** UPDATE ***/
+
+		p1.name = "John";
+		p1.age = 27;
+		OhmDB.update(p1);
+
+		Person p3 = OhmDB.get(id1);
+		eq(OhmDB.get(id1), p1);
+		eq(p3.name, "John");
+		eq(p3.age, 27);
+
+		eq(OhmDB.defaultDb().table(Person.class).size(), 2);
+
+		/*** DELETE ***/
+		OhmDB.delete(id2);
+		eq(OhmDB.table(Person.class).size(), 1);
+		
+		
+
 	}
 
 }
