@@ -70,6 +70,8 @@ public class MinCRUDTest extends TestCommons {
 		/*** DELETE ***/
 		OhmDB.delete(id2);
 		eq(OhmDB.table(Person.class).size(), 1);
+		
+		
 
 	}
 
