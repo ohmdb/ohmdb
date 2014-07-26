@@ -33,15 +33,19 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.ohmdb.TableInternals;
 import com.ohmdb.abstracts.Any;
 import com.ohmdb.abstracts.Column;
+import com.ohmdb.abstracts.ComplexIndex;
+import com.ohmdb.abstracts.DataStore;
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.abstracts.DbInsider;
 import com.ohmdb.abstracts.IdAddress;
 import com.ohmdb.abstracts.IdColl;
 import com.ohmdb.abstracts.Index;
+import com.ohmdb.abstracts.JokerCreator;
 import com.ohmdb.abstracts.LockManager;
-import com.ohmdb.abstracts.TableInternals;
-import com.ohmdb.api.Criteria;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.api.CustomIndex;
 import com.ohmdb.api.Ids;
 import com.ohmdb.api.Mapper;
@@ -59,24 +63,18 @@ import com.ohmdb.api.Visitor;
 import com.ohmdb.bean.BeanInfo;
 import com.ohmdb.bean.BeanIntrospector;
 import com.ohmdb.bean.PropertyInfo;
-import com.ohmdb.dsl.criteria.impl.ComplexCriteriaImpl;
-import com.ohmdb.dsl.criteria.impl.CriteriaImpl;
+import com.ohmdb.dsl.TableDSL;
+import com.ohmdb.dsl.rel.SearchCriteriaImpl;
 import com.ohmdb.exception.InvalidColumnException;
 import com.ohmdb.exception.InvalidIdException;
-import com.ohmdb.filestore.DataStore;
-import com.ohmdb.filestore.DatastoreTransaction;
-import com.ohmdb.index.ComplexIndex;
-import com.ohmdb.joker.JokerCreator;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.numbers.Nums;
 import com.ohmdb.transaction.TransactionInternals;
 import com.ohmdb.transaction.Transactor;
 import com.ohmdb.util.Check;
 import com.ohmdb.util.Errors;
 import com.ohmdb.util.U;
-import com.ohmdb.util.UTILS;
 
-public class TableImpl<E> implements Table<E>, TableInternals<E> {
+public class TableImpl<E> extends TableDSL<E> implements Table<E>, TableInternals<E> {
 
 	private long deletedCount;
 	private int size;
@@ -88,7 +86,6 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	private final List<Integer> currentlyDeleted = new LinkedList<Integer>();
 
 	private final BeanIntrospector introspector = new BeanIntrospector();
-	private final JokerCreator jokerator = new JokerCreator();
 
 	private final OhmDBImpl db;
 
@@ -214,7 +211,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public Object read(long id, String col) {
 		try {
 			// READ LOCK
-			locker.tableReadLock(this);
+			locker.globalReadLock();
 
 			checkId(id);
 
@@ -228,7 +225,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// READ UNLOCK
-			locker.tableReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -236,7 +233,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void clear() {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			// RUN INSIDE TRANSACTION
 			DatastoreTransaction tx = getTransaction();
@@ -251,7 +248,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -305,7 +302,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public E get(long id) {
 		try {
 			// READ LOCK
-			locker.tableReadLock(this);
+			locker.globalReadLock();
 
 			checkId(id);
 
@@ -324,7 +321,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 			return entity;
 		} finally {
 			// READ UNLOCK
-			locker.tableReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -332,7 +329,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void load(long id, E entity) {
 		try {
 			// READ LOCK
-			locker.tableReadLock(this);
+			locker.globalReadLock();
 
 			checkId(id);
 
@@ -347,7 +344,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 			insider.got(clazz, id, entity);
 		} finally {
 			// READ UNLOCK
-			locker.tableReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -372,7 +369,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public long[] find(SearchCriteria criteria) {
 		try {
 			// READ LOCK
-			locker.tableReadLock(this);
+			locker.globalReadLock();
 
 			long[] ids = findBy(criteria).toArray();
 
@@ -380,7 +377,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// READ UNLOCK
-			locker.tableReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -456,7 +453,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public long insert(E entity) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			long id = insertRow(entity);
 
@@ -464,7 +461,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -472,7 +469,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public long insert(Map<String, Object> properties) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			E entity = newEntity();
 
@@ -487,7 +484,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -668,7 +665,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void delete(long id) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			checkId(id);
 
@@ -682,7 +679,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -697,7 +694,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		int row = row(id);
 
-		// FIXME: check - changelog if not deleted rels?
+		// TODO check - changelog if not deleted rels?
 
 		db.deleteRelsInTx(id, tx); // CHANGE #1
 
@@ -770,7 +767,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void print() {
 		try {
 			// READ LOCK
-			locker.tableReadLock(this);
+			locker.globalReadLock();
 
 			System.out.println("*** Table " + name() + " ***");
 			for (long id : ids()) {
@@ -780,7 +777,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// READ UNLOCK
-			locker.tableReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -788,13 +785,13 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public int size() {
 		try {
 			// READ LOCK
-			locker.tableReadLock(this);
+			locker.globalReadLock();
 
 			return size;
 
 		} finally {
 			// READ UNLOCK
-			locker.tableReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -802,7 +799,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void update(long id, E entity) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			checkId(id);
 
@@ -816,7 +813,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -824,9 +821,9 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void update(E entity) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
-			long id = UTILS.getId(entity);
+			long id = U.getId(entity);
 			checkId(id);
 
 			// RUN INSIDE TRANSACTION
@@ -839,7 +836,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -847,7 +844,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void update(long id, Map<String, Object> properties) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			checkId(id);
 
@@ -869,7 +866,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -877,7 +874,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public void set(long id, String col, Object value) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			checkId(id);
 			checkColumn(col);
@@ -902,7 +899,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -1156,21 +1153,6 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	}
 
 	@Override
-	public <T> Criteria<E, T> where(T property) {
-		return new CriteriaImpl<E, T>(this, jokerator.decode(property));
-	}
-
-	@Override
-	public <T> Criteria<E, T> where(String propertyName, Class<T> type) {
-		return new CriteriaImpl<E, T>(this, propertyName);
-	}
-
-	@Override
-	public <T> Criteria<E, T> where(CustomIndex<E, T> indexer) {
-		return new ComplexCriteriaImpl<E, T>(this, indexer);
-	}
-
-	@Override
 	public <T> void createIndexOn(T property) {
 		createIndexOnNamed(jokerator.decode(property));
 	}
@@ -1195,7 +1177,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public <T> void createIndexOnNamed(String propertyName, Transformer<T> transformer) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			PropertyInfo prop = prop(propertyName);
 
@@ -1222,7 +1204,7 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -1253,13 +1235,13 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public <T> CustomIndex<E, T> index(Mapper<E, T> mapper, Object... properties) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			return complexIndex(properties, mapper);
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -1267,13 +1249,13 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 	public <T> CustomIndex<E, T> multiIndex(Mapper<E, T[]> mapper, Object... properties) {
 		try {
 			// WRITE LOCK
-			locker.tableWriteLock(this);
+			locker.globalWriteLock();
 
 			return complexIndex(properties, mapper);
 
 		} finally {
 			// WRITE UNLOCK
-			locker.tableWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -1301,11 +1283,6 @@ public class TableImpl<E> implements Table<E>, TableInternals<E> {
 
 	private Index makeIndex() {
 		return new TreeIndex();
-	}
-
-	@Override
-	public void each(Visitor<E> visitor) {
-		forEach(visitor);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ package com.ohmdb.bean;
 import org.testng.annotations.Test;
 
 import com.ohmdb.test.TestCommons;
-import com.ohmdb.util.UTILS;
+import com.ohmdb.util.U;
 
 public class BeanIdTest extends TestCommons {
 
@@ -56,19 +56,19 @@ public class BeanIdTest extends TestCommons {
 	public void chouldGetIdFromField() throws Exception {
 		A2 a = new A2();
 		a.id = 1234;
-		eq(UTILS.getId(a), 1234);
+		eq(U.getId(a), 1234);
 	}
 
 	@Test
 	public void chouldGetIdFromGetter() throws Exception {
 		B2 b = new B2();
-		eq(UTILS.getId(b), 345);
+		eq(U.getId(b), 345);
 	}
 
 	@Test
 	public void chouldGetIdFromGetter2() throws Exception {
 		C2 c = new C2();
-		eq(UTILS.getId(c), 987);
+		eq(U.getId(c), 987);
 	}
 
 }

@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ohmdb.abstracts.DataSource;
+import com.ohmdb.abstracts.DataStore;
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.api.TransactionListener;
 import com.ohmdb.util.Check;
 import com.ohmdb.util.Errors;
@@ -107,23 +110,37 @@ public class FilestoreTransaction implements DatastoreTransaction {
 		store.rollback(this);
 	}
 
+	@Override
 	public synchronized void addListener(TransactionListener listener) {
 		Check.arg(!listeners.contains(listener), "Listener already registered for this transaction!");
 		listeners.add(listener);
 	}
 
-	synchronized void success() {
+	@Override
+	public synchronized void success() {
 		for (TransactionListener listener : listeners) {
 			listener.onSuccess();
 		}
 	}
 
+	@Override
 	public synchronized boolean isReadOnly() {
 		return changed.isEmpty() && values.isEmpty() && deleted.isEmpty();
 	}
 
+	@Override
 	public synchronized void done() {
 		state = TxState.DONE;
+	}
+
+	@Override
+	public Map<Long, Object> changed() {
+		return values;
+	}
+
+	@Override
+	public Set<Long> deleted() {
+		return deleted;
 	}
 
 }

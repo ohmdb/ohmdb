@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 
 import com.ohmdb.api.Op;
 import com.ohmdb.api.SearchCriteria;
-import com.ohmdb.impl.SearchCriteriaImpl;
+import com.ohmdb.dsl.rel.SearchCriteriaImpl;
 import com.ohmdb.test.TestCommons;
 
 public class SearchTest extends TestCommons {

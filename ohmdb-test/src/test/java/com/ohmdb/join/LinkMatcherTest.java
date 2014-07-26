@@ -24,12 +24,16 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.ReadOnlyRelation;
 import com.ohmdb.api.Links;
-import com.ohmdb.numbers.Numbers;
+import com.ohmdb.dsl.join.DefaultJoinConfig;
+import com.ohmdb.dsl.join.JoinAlternative;
+import com.ohmdb.dsl.join.JoinBuilder;
+import com.ohmdb.dsl.join.JoinConfig;
+import com.ohmdb.dsl.join.JoinQuery;
 import com.ohmdb.test.TestCommons;
-import com.ohmdb.util.LINKS;
 import com.ohmdb.util.UTILS;
 
 public class LinkMatcherTest extends TestCommons {
@@ -55,7 +59,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println(query);
 
 		DefaultJoinConfig params = (DefaultJoinConfig) jparam(query, nums(1, 2, 7), nums(30, 40, 90), nums(200, 333));
-		System.out.println(params.joins.length);
+		System.out.println(params.joinsCount());
 
 		// [[1: [30], 2: [30]] , [30: [333]]
 		Links[] links = matcher().match(params);
@@ -87,7 +91,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -107,7 +111,7 @@ public class LinkMatcherTest extends TestCommons {
 		Links[] links = matcher().match(params);
 		Links[] links2 = nlinks(links(), links(), links());
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -127,7 +131,7 @@ public class LinkMatcherTest extends TestCommons {
 		Links[] links = matcher().match(params);
 
 		System.out.println("=== REZ === " + Arrays.toString(links));
-		
+
 		// FIXME complete
 	}
 
@@ -149,7 +153,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println(query);
 
 		DefaultJoinConfig params = (DefaultJoinConfig) jparam(query, nums(0, 2, 3, 4, 5), nums(10, 12, 13, 16, 17));
-		System.out.println(params.joins.length);
+		System.out.println(params.joinsCount());
 
 		Links[] links = matcher().match(params);
 
@@ -164,7 +168,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -190,12 +194,12 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println(query);
 
 		DefaultJoinConfig params = (DefaultJoinConfig) jparam(query, nums(1, 2, 3, 4, 5), nums(10, 11, 20, 21, 99));
-		System.out.println(params.joins.length);
+		System.out.println(params.joinsCount());
 
 		Links[] links = matcher().match(params);
 
 		// FIXME complete this
-		// isTrue(LINKS.equal(links, links2));
+		// isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -220,7 +224,7 @@ public class LinkMatcherTest extends TestCommons {
 
 		DefaultJoinConfig params = (DefaultJoinConfig) jparam(query, nums(1, 2, 3, 4, 5), nums(10, 20, 30),
 				nums(100, 200, 300));
-		System.out.println(params.joins.length);
+		System.out.println(params.joinsCount());
 
 		Links[] links = matcher().match(params);
 		Links[] links2 = nlinks(links(), links());
@@ -228,7 +232,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -249,7 +253,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 
 	}
 
@@ -275,7 +279,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -298,7 +302,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -323,7 +327,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -349,7 +353,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -375,7 +379,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	@Test
@@ -397,7 +401,7 @@ public class LinkMatcherTest extends TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 }

@@ -23,9 +23,12 @@ package com.ohmdb.join;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.api.Links;
-import com.ohmdb.numbers.Numbers;
+import com.ohmdb.dsl.join.JoinBuilder;
+import com.ohmdb.dsl.join.JoinConfig;
+import com.ohmdb.dsl.join.JoinQuery;
 import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.UTILS;
 

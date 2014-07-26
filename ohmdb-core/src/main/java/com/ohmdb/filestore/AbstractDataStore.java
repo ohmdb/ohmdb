@@ -22,6 +22,7 @@ package com.ohmdb.filestore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.ohmdb.abstracts.DataStore;
 import com.ohmdb.util.Errors;
 
 public abstract class AbstractDataStore implements DataStore {

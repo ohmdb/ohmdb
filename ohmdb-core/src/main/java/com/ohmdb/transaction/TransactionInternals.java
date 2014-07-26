@@ -20,10 +20,10 @@ package com.ohmdb.transaction;
  * #L%
  */
 
-import com.ohmdb.filestore.FilestoreTransaction;
+import com.ohmdb.abstracts.DatastoreTransaction;
 
 public interface TransactionInternals {
 
-	FilestoreTransaction getStoreTx();
+	DatastoreTransaction getStoreTx();
 
 }

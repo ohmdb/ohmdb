@@ -23,11 +23,11 @@ package com.ohmdb.relation;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.ohmdb.abstracts.DatastoreTransaction;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.RelationInternals;
 import com.ohmdb.api.Table;
-import com.ohmdb.filestore.DatastoreTransaction;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.util.Errors;
 
 @SuppressWarnings({ "serial" })

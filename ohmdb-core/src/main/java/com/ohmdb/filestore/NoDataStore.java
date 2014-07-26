@@ -20,6 +20,8 @@ package com.ohmdb.filestore;
  * #L%
  */
 
+import com.ohmdb.abstracts.DataStore;
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.impl.OhmDBImpl;
 import com.ohmdb.util.Errors;
 
@@ -42,7 +44,7 @@ public class NoDataStore extends AbstractDataStore implements DataStore {
 	}
 
 	@Override
-	public FilestoreTransaction transaction() {
+	public DatastoreTransaction transaction() {
 		checkActive();
 		return new FilestoreTransaction(this, ohmDBImpl);
 	}
@@ -58,12 +60,12 @@ public class NoDataStore extends AbstractDataStore implements DataStore {
 	}
 
 	@Override
-	public void commit(FilestoreTransaction tx) {
+	public void commit(DatastoreTransaction tx) {
 		tx.success();
 	}
 
 	@Override
-	public void rollback(FilestoreTransaction tx) {
+	public void rollback(DatastoreTransaction tx) {
 	}
 
 }

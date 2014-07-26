@@ -23,8 +23,8 @@ package com.ohmdb.test;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.ohmdb.TableInternals;
 import com.ohmdb.abstracts.DbInsider;
-import com.ohmdb.abstracts.TableInternals;
 import com.ohmdb.api.Table;
 import com.ohmdb.bean.BeanIntrospector;
 import com.ohmdb.bean.PropertyInfo;

@@ -26,7 +26,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.ohmdb.api.Links;
-import com.ohmdb.util.LINKS;
+import com.ohmdb.util.UTILS;
 
 public class LinksBuilder {
 
@@ -58,7 +58,7 @@ public class LinksBuilder {
 			rights.removeAll(linkedTos);
 		}
 
-		return LINKS.from(links);
+		return UTILS.linksFrom(links);
 	}
 
 }

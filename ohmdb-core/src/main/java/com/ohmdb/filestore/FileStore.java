@@ -41,6 +41,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.ohmdb.abstracts.DataStore;
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.api.Db;
 import com.ohmdb.api.TransactionListener;
 import com.ohmdb.codec.StoreCodec;
@@ -113,7 +115,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	int totalBlocks = 0;
 	int errorBlocks = 0;
 
-	private Queue<FilestoreTransaction> txs = new ArrayBlockingQueue<FilestoreTransaction>(TX_MAX_COUNT);
+	private Queue<DatastoreTransaction> txs = new ArrayBlockingQueue<DatastoreTransaction>(TX_MAX_COUNT);
 
 	// private Queue<FilestoreTransaction> txs = new
 	// ConcurrentLinkedQueue<FilestoreTransaction>();
@@ -938,20 +940,20 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	@Override
-	public void commit(FilestoreTransaction tx) {
+	public void commit(DatastoreTransaction tx) {
 		while (!txs.offer(tx)) {
 			U.sleep(5);
 		}
 	}
 
 	@Override
-	public void rollback(FilestoreTransaction tx) {
+	public void rollback(DatastoreTransaction tx) {
 		releaseTx(tx);
 	}
 
-	private boolean transact(long txId, FilestoreTransaction tx) throws BufferFullException {
+	private boolean transact(long txId, DatastoreTransaction tx) throws BufferFullException {
 		try {
-			transact(txId, tx.values, tx.deleted);
+			transact(txId, tx.changed(), tx.deleted());
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -966,9 +968,9 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 		// executes in separate thread in parallel
 		try {
 
-			FilestoreTransaction tx;
+			DatastoreTransaction tx;
 
-			List<FilestoreTransaction> currentTxs = new ArrayList<FilestoreTransaction>(20000);
+			List<DatastoreTransaction> currentTxs = new ArrayList<DatastoreTransaction>(20000);
 
 			while ((dbExists() && running.get()) || !txs.isEmpty()) {
 				boolean transacted = true;
@@ -989,7 +991,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 					try {
 						transacted = tx.isReadOnly() ? true : transact(txId, tx);
 					} catch (BufferFullException e) {
-//						System.out.println("*** BUFFER FULL! ***");
+						// System.out.println("*** BUFFER FULL! ***");
 						transacted = false;
 						if (currentTxs.isEmpty()) {
 							throw Errors.rte("The transaction is too big!");
@@ -1014,7 +1016,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 					file.getChannel().force(false);
 				}
 
-				for (FilestoreTransaction txx : currentTxs) {
+				for (DatastoreTransaction txx : currentTxs) {
 					txx.success();
 					releaseTx(txx);
 				}
@@ -1061,7 +1063,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 		}
 	}
 
-	private void releaseTx(FilestoreTransaction tx) {
+	private void releaseTx(DatastoreTransaction tx) {
 		tx.done();
 	}
 

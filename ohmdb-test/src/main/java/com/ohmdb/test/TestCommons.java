@@ -37,30 +37,30 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
 import com.google.common.base.Objects;
+import com.ohmdb.abstracts.DatastoreTransaction;
+import com.ohmdb.abstracts.FutureIds;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.ReadOnlyRelation;
-import com.ohmdb.api.OhmDB;
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Links;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.ManyToOne;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.Db;
+import com.ohmdb.api.OhmDB;
 import com.ohmdb.api.OneToMany;
 import com.ohmdb.api.Table;
 import com.ohmdb.api.Transaction;
 import com.ohmdb.api.TransactionListener;
-import com.ohmdb.filestore.DatastoreTransaction;
+import com.ohmdb.dsl.join.DefaultJoinConfig;
+import com.ohmdb.dsl.join.JoinConfig;
+import com.ohmdb.dsl.join.JoinQuery;
+import com.ohmdb.dsl.join.LinkMatcher;
 import com.ohmdb.impl.OhmDBImpl;
-import com.ohmdb.join.DefaultJoinConfig;
-import com.ohmdb.join.JoinConfig;
-import com.ohmdb.join.JoinQuery;
-import com.ohmdb.join.LinkMatcher;
-import com.ohmdb.join.futureid.FutureIds;
-import com.ohmdb.numbers.Numbers;
+import com.ohmdb.join.futureid.IDS;
 import com.ohmdb.numbers.Nums;
 import com.ohmdb.util.Check;
 import com.ohmdb.util.Errors;
-import com.ohmdb.util.LINKS;
 import com.ohmdb.util.U;
 import com.ohmdb.util.UTILS;
 
@@ -227,10 +227,10 @@ public abstract class TestCommons {
 
 	protected void eqlinks(Links paths, Links expected) {
 		if (verbose) {
-			System.out.println("EXPECTED: " + LINKS.toString(expected));
-			System.out.println(" - FOUND: " + LINKS.toString(paths));
+			System.out.println("EXPECTED: " + UTILS.toString(expected));
+			System.out.println(" - FOUND: " + UTILS.toString(paths));
 		}
-		Assert.assertTrue(LINKS.equal(paths, expected));
+		Assert.assertTrue(UTILS.equal(paths, expected));
 	}
 
 	protected void linksEQ(Links[] links, Links[] expected) {
@@ -238,15 +238,15 @@ public abstract class TestCommons {
 			System.out.println("EXPECTED: " + U.text(expected));
 			System.out.println(" - FOUND: " + U.text(links));
 		}
-		isTrue(LINKS.equal(links, expected));
+		isTrue(UTILS.equal(links, expected));
 	}
 
 	protected void neq(Links paths, Links notExpected) {
 		if (verbose) {
-			System.out.println("NOT EXPECTED: " + LINKS.toString(notExpected));
-			System.out.println("     - FOUND: " + LINKS.toString(paths));
+			System.out.println("NOT EXPECTED: " + UTILS.toString(notExpected));
+			System.out.println("     - FOUND: " + UTILS.toString(paths));
 		}
-		Assert.assertFalse(LINKS.equal(paths, notExpected));
+		Assert.assertFalse(UTILS.equal(paths, notExpected));
 	}
 
 	public static void check(boolean state) {
@@ -278,11 +278,11 @@ public abstract class TestCommons {
 	}
 
 	public Links links(long[]... fromTos) {
-		return LINKS.fromTos(fromTos);
+		return UTILS.linksFromTos(fromTos);
 	}
 
 	public JoinConfig jparam(JoinQuery query, Numbers... ids) {
-		return new DefaultJoinConfig(UTILS.futureIds(ids), query.joins());
+		return new DefaultJoinConfig(IDS.futureIds(ids), query.joins());
 	}
 
 	public JoinConfig jparam(JoinQuery query, FutureIds... futureIds) {
@@ -638,7 +638,7 @@ public abstract class TestCommons {
 		System.out.println("=== REZ === " + Arrays.toString(links));
 		System.out.println("=== EXP === " + Arrays.toString(links2));
 
-		isTrue(LINKS.equal(links, links2));
+		isTrue(UTILS.equal(links, links2));
 	}
 
 	protected void checkJoin(JoinConfig config, Links[] links2) {
@@ -766,7 +766,7 @@ public abstract class TestCommons {
 	}
 
 	protected void hasId(Object obj, int id) {
-		eq(UTILS.getId(obj), id);
+		eq(U.getId(obj), id);
 	}
 
 	protected void waitTx(DatastoreTransaction... txs) {

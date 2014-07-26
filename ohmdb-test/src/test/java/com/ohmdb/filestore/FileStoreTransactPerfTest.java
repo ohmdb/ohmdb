@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.testng.annotations.Test;
 
-import com.ohmdb.abstracts.DataLoader;
 import com.ohmdb.codec.IntCodec;
 import com.ohmdb.impl.OhmDBStats;
 import com.ohmdb.test.TestCommons;

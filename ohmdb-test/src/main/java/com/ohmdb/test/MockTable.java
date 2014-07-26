@@ -23,8 +23,9 @@ package com.ohmdb.test;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.ohmdb.TableInternals;
 import com.ohmdb.abstracts.DbInsider;
-import com.ohmdb.abstracts.TableInternals;
+import com.ohmdb.abstracts.JokerCreator;
 import com.ohmdb.api.Criteria;
 import com.ohmdb.api.CustomIndex;
 import com.ohmdb.api.Ids;
@@ -36,7 +37,6 @@ import com.ohmdb.api.Trigger;
 import com.ohmdb.api.TriggerAction;
 import com.ohmdb.api.Visitor;
 import com.ohmdb.bean.PropertyInfo;
-import com.ohmdb.joker.JokerCreator;
 
 @SuppressWarnings("rawtypes")
 public class MockTable implements Table, TableInternals {
@@ -271,11 +271,6 @@ public class MockTable implements Table, TableInternals {
 	public Criteria where(CustomIndex index) {
 
 		return null;
-	}
-
-	@Override
-	public void each(Visitor visitor) {
-
 	}
 
 	@Override

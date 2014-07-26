@@ -22,6 +22,7 @@ package com.ohmdb.numbers;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.test.TestCommons;
 
 public class NumbersTest extends TestCommons {

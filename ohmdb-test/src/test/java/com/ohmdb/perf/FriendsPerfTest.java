@@ -24,17 +24,17 @@ import org.testng.annotations.Test;
 
 import com.ohmdb.abstracts.Any;
 import com.ohmdb.abstracts.RWRelation;
-import com.ohmdb.api.Ohm;
 import com.ohmdb.api.Db;
+import com.ohmdb.api.Ohm;
+import com.ohmdb.dsl.join.JoinBuilder;
+import com.ohmdb.dsl.join.JoinConfig;
+import com.ohmdb.dsl.join.JoinQuery;
+import com.ohmdb.dsl.join.LinkMatcher;
 import com.ohmdb.impl.OhmDBImpl;
-import com.ohmdb.join.JoinBuilder;
-import com.ohmdb.join.JoinConfig;
-import com.ohmdb.join.JoinQuery;
-import com.ohmdb.join.LinkMatcher;
+import com.ohmdb.join.futureid.IDS;
 import com.ohmdb.test.TestAny;
 import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.Measure;
-import com.ohmdb.util.UTILS;
 
 public class FriendsPerfTest extends TestCommons {
 
@@ -81,8 +81,8 @@ public class FriendsPerfTest extends TestCommons {
 			int a = rnd(USERS_N);
 			int b = rnd(USERS_N);
 
-			configs[i] = jparam(query, UTILS.futureIds(nums(a)), UTILS.futureIds(any1), UTILS.futureIds(any2),
-					UTILS.futureIds(any3), UTILS.futureIds(nums(b)));
+			configs[i] = jparam(query, IDS.futureIds(nums(a)), IDS.futureIds(any1), IDS.futureIds(any2),
+					IDS.futureIds(any3), IDS.futureIds(nums(b)));
 		}
 
 		System.out.println("config ready!");

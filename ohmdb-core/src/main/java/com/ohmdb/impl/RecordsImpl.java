@@ -20,7 +20,7 @@ package com.ohmdb.impl;
  * #L%
  */
 
-import com.ohmdb.abstracts.TableInternals;
+import com.ohmdb.TableInternals;
 import com.ohmdb.api.Ids;
 import com.ohmdb.api.Table;
 import com.ohmdb.dsl.impl.AbstractUpdaters;

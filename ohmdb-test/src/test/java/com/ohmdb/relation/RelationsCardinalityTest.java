@@ -30,7 +30,7 @@ import com.ohmdb.api.OneToOne;
 import com.ohmdb.test.Book;
 import com.ohmdb.test.Person;
 import com.ohmdb.test.TestCommons;
-import com.ohmdb.util.LINKS;
+import com.ohmdb.util.UTILS;
 
 public class RelationsCardinalityTest extends TestCommons {
 
@@ -65,16 +65,16 @@ public class RelationsCardinalityTest extends TestCommons {
 		Links[] ln1 = db.leftJoin(persons.all(), rel, books.all()).all().links();
 		Links exp1 = links(noln(0), ln(1, 12, 13), noln(2), noln(3), noln(4), noln(5), noln(6), noln(7), noln(8),
 				noln(9));
-		isTrue(LINKS.equal(ln1, nlinks(exp1)));
+		isTrue(UTILS.equal(ln1, nlinks(exp1)));
 
 		Links[] ln2 = db.rightJoin(persons.all(), rel, books.all()).all().links();
 		Links exp2 = links(ln(-1, 10, 11, 14, 15, 16, 17, 18, 19), ln(1, 12, 13));
-		isTrue(LINKS.equal(ln2, nlinks(exp2)));
+		isTrue(UTILS.equal(ln2, nlinks(exp2)));
 
 		Links[] ln3 = db.fullJoin(persons.all(), rel, books.all()).all().links();
 		Links exp3 = links(ln(-1, 10, 11, 14, 15, 16, 17, 18, 19), noln(0), ln(1, 12, 13), noln(2), noln(3), noln(4),
 				noln(5), noln(6), noln(7), noln(8), noln(9));
-		isTrue(LINKS.equal(ln3, nlinks(exp3)));
+		isTrue(UTILS.equal(ln3, nlinks(exp3)));
 
 	}
 

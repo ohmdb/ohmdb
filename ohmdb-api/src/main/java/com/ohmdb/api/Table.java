@@ -82,6 +82,8 @@ public interface Table<E> extends Ids<E> {
 
 	<T> Criteria<E, T> where(CustomIndex<E, T> index);
 
-	void each(Visitor<E> visitor);
+	void forEach(Visitor<E> visitor);
+
+	void forEach(long[] ids, Visitor<E> visitor);
 
 }

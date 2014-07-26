@@ -22,10 +22,10 @@ package com.ohmdb.transaction;
 
 import java.util.Arrays;
 
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.api.Transaction;
 import com.ohmdb.api.TransactionException;
 import com.ohmdb.api.TransactionListener;
-import com.ohmdb.filestore.FilestoreTransaction;
 import com.ohmdb.util.Errors;
 import com.ohmdb.util.U;
 
@@ -33,7 +33,7 @@ public class TransactionImpl implements Transaction, TransactionInternals, Trans
 
 	private final Transactor transactor;
 
-	private final FilestoreTransaction storeTx;
+	private final DatastoreTransaction storeTx;
 
 	private TransactionStatus status = TransactionStatus.INITIAL;
 
@@ -41,7 +41,7 @@ public class TransactionImpl implements Transaction, TransactionInternals, Trans
 
 	private volatile TransactionException failure;
 
-	public TransactionImpl(Transactor transactor, FilestoreTransaction storeTx) {
+	public TransactionImpl(Transactor transactor, DatastoreTransaction storeTx) {
 		this.transactor = transactor;
 		this.storeTx = storeTx;
 	}
@@ -73,7 +73,7 @@ public class TransactionImpl implements Transaction, TransactionInternals, Trans
 	}
 
 	@Override
-	public FilestoreTransaction getStoreTx() {
+	public DatastoreTransaction getStoreTx() {
 		return storeTx;
 	}
 

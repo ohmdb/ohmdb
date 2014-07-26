@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.codec.StrCodec;
 import com.ohmdb.impl.OhmDBStats;
 import com.ohmdb.test.TestCommons;

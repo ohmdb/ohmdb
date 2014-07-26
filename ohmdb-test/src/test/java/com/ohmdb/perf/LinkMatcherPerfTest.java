@@ -23,9 +23,9 @@ package com.ohmdb.perf;
 import org.testng.annotations.Test;
 
 import com.ohmdb.abstracts.ReadOnlyRelation;
-import com.ohmdb.join.JoinBuilder;
-import com.ohmdb.join.JoinConfig;
-import com.ohmdb.join.JoinQuery;
+import com.ohmdb.dsl.join.JoinBuilder;
+import com.ohmdb.dsl.join.JoinConfig;
+import com.ohmdb.dsl.join.JoinQuery;
 import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.Measure;
 

@@ -24,15 +24,15 @@ import org.testng.annotations.Test;
 
 import com.ohmdb.links.NoLinks;
 import com.ohmdb.test.TestCommons;
-import com.ohmdb.util.LINKS;
+import com.ohmdb.util.UTILS;
 
 public class LinksEqualityTest extends TestCommons {
 
 	@Test
 	public void shouldMatchPaths() {
-		eqlinks(new NoLinks(), LINKS.NO_PATHS);
-		neq(links(ln(1)), LINKS.NO_PATHS);
-		neq(LINKS.NO_PATHS, links(ln(77)));
+		eqlinks(new NoLinks(), UTILS.NO_PATHS);
+		neq(links(ln(1)), UTILS.NO_PATHS);
+		neq(UTILS.NO_PATHS, links(ln(77)));
 
 		eqlinks(links(ln(1)), links(ln(1)));
 		neq(links(ln(1)), links(ln(77)));

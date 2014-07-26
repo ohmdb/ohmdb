@@ -25,8 +25,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.ohmdb.abstracts.Index;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.api.Op;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.numbers.Nums;
 import com.ohmdb.util.Errors;
 

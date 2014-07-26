@@ -25,9 +25,9 @@ import java.util.Map;
 
 import com.google.common.base.Objects;
 import com.ohmdb.abstracts.DbInsider;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.bean.BeanIntrospector;
 import com.ohmdb.bean.PropertyInfo;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.util.Errors;
 
 public class TestInsider implements DbInsider {

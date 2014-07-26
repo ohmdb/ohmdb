@@ -24,7 +24,7 @@ import java.util.TreeSet;
 
 import org.testng.annotations.Test;
 
-import com.ohmdb.numbers.Numbers;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.numbers.Nums;
 import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.Measure;

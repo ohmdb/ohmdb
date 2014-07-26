@@ -23,9 +23,9 @@ package com.ohmdb.perf;
 import java.util.Date;
 import java.util.Random;
 
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.api.Table;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.test.Person;
 import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.UTILS;

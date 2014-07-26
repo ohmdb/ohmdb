@@ -24,11 +24,11 @@ import java.io.IOException;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
-import com.ohmdb.api.Ohm;
 import com.ohmdb.api.Db;
+import com.ohmdb.api.Ohm;
 import com.ohmdb.api.Table;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.test.Book;
 import com.ohmdb.test.Person;
 import com.ohmdb.test.TestCommons;

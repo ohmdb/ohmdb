@@ -28,15 +28,15 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.ohmdb.abstracts.DataStore;
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.abstracts.IdColl;
 import com.ohmdb.abstracts.LockManager;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.api.Table;
 import com.ohmdb.api.Transaction;
-import com.ohmdb.filestore.DataStore;
-import com.ohmdb.filestore.DatastoreTransaction;
 import com.ohmdb.impl.OhmDBStats;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.numbers.Nums;
 import com.ohmdb.transaction.TransactionInternals;
 import com.ohmdb.transaction.Transactor;
@@ -181,7 +181,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 	public boolean link(long from, long to) {
 		try {
 			// WRITE LOCK
-			locker.relationWriteLock(this);
+			locker.globalWriteLock();
 
 			nice("START LINKING " + name + ": " + from + " " + to);
 
@@ -198,7 +198,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.relationWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 	}
 
@@ -226,7 +226,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		try {
 			// WRITE LOCK
-			locker.relationWriteLock(this);
+			locker.globalWriteLock();
 
 			// nice("\nSTART DELINKING " + name + ": " + from + " " + to);
 
@@ -243,7 +243,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.relationWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 
 	}
@@ -272,7 +272,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		try {
 			// WRITE LOCK
-			locker.relationWriteLock(this);
+			locker.globalWriteLock();
 
 			// nice("\nSTART DELETE FROM " + name + ": " + id);
 
@@ -295,7 +295,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.relationWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 
 	}
@@ -305,7 +305,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		try {
 			// WRITE LOCK
-			locker.relationWriteLock(this);
+			locker.globalWriteLock();
 
 			// nice("\nSTART DELETE TO " + name + ": " + id);
 
@@ -328,7 +328,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.relationWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 
 	}
@@ -361,7 +361,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 	public void clear() {
 		try {
 			// WRITE LOCK
-			locker.relationWriteLock(this);
+			locker.globalWriteLock();
 
 			// RUN INSIDE TRANSACTION
 			DatastoreTransaction tx = getTransaction();
@@ -377,7 +377,7 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 
 		} finally {
 			// WRITE UNLOCK
-			locker.relationWriteUnlock(this);
+			locker.globalWriteUnlock();
 		}
 
 	}
@@ -449,14 +449,14 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 	public Numbers linksFrom(long id) {
 		try {
 			// READ LOCK
-			locker.relationReadLock(this);
+			locker.globalReadLock();
 
 			Numbers links = left.get(id);
 			return links != null ? links : Nums.none();
 
 		} finally {
 			// READ UNLOCK
-			locker.relationReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -464,14 +464,14 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 	public Numbers linksTo(long id) {
 		try {
 			// READ LOCK
-			locker.relationReadLock(this);
+			locker.globalReadLock();
 
 			Numbers links = rightish().get(id);
 			return links != null ? links : Nums.none();
 
 		} finally {
 			// READ UNLOCK
-			locker.relationReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 
@@ -592,13 +592,13 @@ public class RelationImpl<FROM, TO> extends AbstractRelation<FROM, TO> {
 	public boolean hasLink(long from, long to) {
 		try {
 			// READ LOCK
-			locker.relationReadLock(this);
+			locker.globalReadLock();
 
 			return leftNums(from).contains(to);
 
 		} finally {
 			// READ UNLOCK
-			locker.relationReadUnlock(this);
+			locker.globalReadUnlock();
 		}
 	}
 

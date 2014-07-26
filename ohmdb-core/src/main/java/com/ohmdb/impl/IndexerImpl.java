@@ -20,9 +20,9 @@ package com.ohmdb.impl;
  * #L%
  */
 
+import com.ohmdb.abstracts.ComplexIndex;
 import com.ohmdb.abstracts.Index;
 import com.ohmdb.api.CustomIndex;
-import com.ohmdb.index.ComplexIndex;
 
 public class IndexerImpl<E, T> implements CustomIndex<E, T> {
 

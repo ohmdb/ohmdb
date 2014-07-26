@@ -21,7 +21,7 @@ package com.ohmdb.links;
  */
 
 import com.ohmdb.api.Links;
-import com.ohmdb.util.LINKS;
+import com.ohmdb.util.UTILS;
 
 public class LinksImpl implements Links {
 
@@ -50,7 +50,7 @@ public class LinksImpl implements Links {
 
 	@Override
 	public Links inverse() {
-		LinksBuilder builder = LINKS.builder();
+		LinksBuilder builder = UTILS.linkBuilder();
 
 		for (int i = 0; i < size(); i++) {
 			long from = from(i);
@@ -76,7 +76,7 @@ public class LinksImpl implements Links {
 
 	@Override
 	public final String toString() {
-		return LINKS.toString(this);
+		return UTILS.toString(this);
 	}
 
 }

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import com.ohmdb.api.Ohm;
 import com.ohmdb.api.Db;
+import com.ohmdb.api.Ohm;
 import com.ohmdb.api.Table;
 import com.ohmdb.statistical.RelationChecker;
 import com.ohmdb.statistical.TableChecker;

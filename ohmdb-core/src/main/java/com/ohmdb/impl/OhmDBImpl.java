@@ -28,25 +28,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ohmdb.abstracts.DataLoader;
+import com.ohmdb.TableInternals;
+import com.ohmdb.abstracts.DataImporter;
+import com.ohmdb.abstracts.DataSource;
+import com.ohmdb.abstracts.DataStore;
+import com.ohmdb.abstracts.DatastoreTransaction;
 import com.ohmdb.abstracts.IdAddress;
 import com.ohmdb.abstracts.IdColl;
 import com.ohmdb.abstracts.LoadedData;
 import com.ohmdb.abstracts.LockManager;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.RelationInternals;
-import com.ohmdb.abstracts.TableInternals;
-import com.ohmdb.api.Ids;
-import com.ohmdb.api.Join;
-import com.ohmdb.api.JoinMode;
-import com.ohmdb.api.ManyToMany;
-import com.ohmdb.api.ManyToOne;
 import com.ohmdb.api.Db;
-import com.ohmdb.api.OneToMany;
-import com.ohmdb.api.OneToOne;
+import com.ohmdb.api.Ids;
 import com.ohmdb.api.Op;
-import com.ohmdb.api.Parameter;
-import com.ohmdb.api.Relation;
 import com.ohmdb.api.SearchCriteria;
 import com.ohmdb.api.Table;
 import com.ohmdb.api.Transaction;
@@ -56,28 +51,21 @@ import com.ohmdb.api.TriggerCreator;
 import com.ohmdb.bean.PropertyInfo;
 import com.ohmdb.codec.ByteArrCodec;
 import com.ohmdb.codec.StoreCodec;
-import com.ohmdb.dsl.impl.ParamImpl;
-import com.ohmdb.dsl.rel.impl.ManyToManyImpl;
-import com.ohmdb.dsl.rel.impl.ManyToOneImpl;
-import com.ohmdb.dsl.rel.impl.OneToManyImpl;
-import com.ohmdb.dsl.rel.impl.OneToOneImpl;
+import com.ohmdb.dsl.OhmDbDSL;
+import com.ohmdb.dsl.join.LinkMatcher;
+import com.ohmdb.dsl.rel.SearchCriteriaImpl;
 import com.ohmdb.exception.InvalidIdException;
-import com.ohmdb.filestore.DataSource;
-import com.ohmdb.filestore.DataStore;
-import com.ohmdb.filestore.DatastoreTransaction;
+import com.ohmdb.filestore.DataLoader;
 import com.ohmdb.filestore.FileStore;
-import com.ohmdb.filestore.FilestoreTransaction;
 import com.ohmdb.filestore.NoDataStore;
 import com.ohmdb.join.DefaultLinkMatcher;
-import com.ohmdb.join.LinkMatcher;
 import com.ohmdb.relation.RelationImpl;
 import com.ohmdb.transaction.TransactionImpl;
 import com.ohmdb.transaction.TransactorImpl;
 import com.ohmdb.util.Errors;
 import com.ohmdb.util.U;
-import com.ohmdb.util.UTILS;
 
-public class OhmDBImpl implements Db, DataSource {
+public class OhmDBImpl extends OhmDbDSL implements Db, DataSource, DataImporter {
 
 	private final StoreCodec<byte[]> VALUE_CODEC = new ByteArrCodec();
 
@@ -97,8 +85,6 @@ public class OhmDBImpl implements Db, DataSource {
 
 	private final TransactorImpl transactor = new TransactorImpl(this, lockManager, stats);
 
-	private final LinkMatcher linkMatcher = new DefaultLinkMatcher();
-
 	private final WeakReference<Db> dbRef;
 
 	private boolean isDown = false;
@@ -109,6 +95,8 @@ public class OhmDBImpl implements Db, DataSource {
 	private Throwable error;
 
 	public OhmDBImpl(String filename) {
+		super(new DefaultLinkMatcher());
+
 		dbRef = new WeakReference<Db>(this);
 
 		DataLoader loader = new DataLoader();
@@ -122,6 +110,8 @@ public class OhmDBImpl implements Db, DataSource {
 	}
 
 	public OhmDBImpl() {
+		super(new DefaultLinkMatcher());
+
 		dbRef = new WeakReference<Db>(this);
 
 		this.store = new NoDataStore(this);
@@ -131,7 +121,7 @@ public class OhmDBImpl implements Db, DataSource {
 
 	@Override
 	public Transaction startTransaction() {
-		FilestoreTransaction tx = store.transaction();
+		DatastoreTransaction tx = store.transaction();
 		TransactionImpl transaction = new TransactionImpl(transactor, tx);
 		transaction.begin();
 		return transaction;
@@ -202,8 +192,9 @@ public class OhmDBImpl implements Db, DataSource {
 		return rel;
 	}
 
-	private synchronized <FROM, TO> RWRelation relation(Table<FROM> from, String name, Table<TO> to, boolean symmetric,
-			boolean manyFroms, boolean manyTos) {
+	@Override
+	protected synchronized <FROM, TO> RWRelation relation(Table<FROM> from, String name, Table<TO> to,
+			boolean symmetric, boolean manyFroms, boolean manyTos) {
 		// relation might be already created in LoadedData.fillData
 		RWRelation rel = relations.get(name);
 
@@ -216,57 +207,6 @@ public class OhmDBImpl implements Db, DataSource {
 		}
 
 		return rel;
-	}
-
-	@Override
-	public <FROM, TO> ManyToOne<FROM, TO> manyToOne(Table<FROM> from, String name, Table<TO> to) {
-		return new ManyToOneImpl<FROM, TO>(relation(from, name, to, false, true, false));
-	}
-
-	@Override
-	public <FROM, TO> OneToMany<FROM, TO> oneToMany(Table<FROM> from, String name, Table<TO> to) {
-		return new OneToManyImpl<FROM, TO>(relation(from, name, to, false, false, true));
-	}
-
-	@Override
-	public <FROM, TO> ManyToMany<FROM, TO> manyToMany(Table<FROM> from, String name, Table<TO> to) {
-		return new ManyToManyImpl<FROM, TO>(relation(from, name, to, false, true, true));
-	}
-
-	@Override
-	public <FROM_TO> ManyToMany<FROM_TO, FROM_TO> manyToManySymmetric(Table<FROM_TO> from, String name,
-			Table<FROM_TO> to) {
-		return new ManyToManyImpl<FROM_TO, FROM_TO>(relation(from, name, to, true, true, true));
-	}
-
-	@Override
-	public <FROM, TO> OneToOne<FROM, TO> oneToOne(Table<FROM> from, String name, Table<TO> to) {
-		return new OneToOneImpl<FROM, TO>(relation(from, name, to, false, false, false));
-	}
-
-	@Override
-	public <FROM_TO> OneToOne<FROM_TO, FROM_TO> oneToOneSymmetric(Table<FROM_TO> from, String name, Table<FROM_TO> to) {
-		return new OneToOneImpl<FROM_TO, FROM_TO>(relation(from, name, to, true, false, false));
-	}
-
-	@Override
-	public <FROM, TO> Join join(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
-		return new JoinImpl(linkMatcher, from, relation, to, JoinMode.INNER);
-	}
-
-	@Override
-	public <FROM, TO> Join leftJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
-		return new JoinImpl(linkMatcher, from, relation, to, JoinMode.LEFT_OUTER);
-	}
-
-	@Override
-	public <FROM, TO> Join rightJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
-		return new JoinImpl(linkMatcher, from, relation, to, JoinMode.RIGHT_OUTER);
-	}
-
-	@Override
-	public <FROM, TO> Join fullJoin(Ids<FROM> from, Relation<FROM, TO> relation, Ids<TO> to) {
-		return new JoinImpl(linkMatcher, from, relation, to, JoinMode.FULL_OUTER);
 	}
 
 	@Override
@@ -287,7 +227,7 @@ public class OhmDBImpl implements Db, DataSource {
 
 	@Override
 	public void update(Object entity) {
-		long id = UTILS.getId(entity);
+		long id = U.getId(entity);
 		IdAddress address = address(id);
 		((TableInternals<?>) address.table).updateObj(entity);
 	}
@@ -322,11 +262,6 @@ public class OhmDBImpl implements Db, DataSource {
 
 	public RWRelation relation(String name) {
 		return relation(null, name, null);
-	}
-
-	@Override
-	public <T> Parameter<T> param(String name, Class<T> type) {
-		return new ParamImpl<T>(name, type);
 	}
 
 	@Override

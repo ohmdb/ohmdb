@@ -23,8 +23,6 @@ package com.ohmdb.impl;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ohmdb.abstracts.LockManager;
-import com.ohmdb.abstracts.RelationInternals;
-import com.ohmdb.abstracts.TableInternals;
 
 public class LockManagerImpl implements LockManager {
 
@@ -55,46 +53,6 @@ public class LockManagerImpl implements LockManager {
 	@Override
 	public void globalWriteUnlock() {
 		globalLock.writeLock().unlock();
-	}
-
-	@Override
-	public void tableReadLock(TableInternals<?> table) {
-		globalReadLock();
-	}
-
-	@Override
-	public void tableWriteLock(TableInternals<?> table) {
-		globalWriteLock();
-	}
-
-	@Override
-	public void tableReadUnlock(TableInternals<?> table) {
-		globalReadUnlock();
-	}
-
-	@Override
-	public void tableWriteUnlock(TableInternals<?> table) {
-		globalWriteUnlock();
-	}
-
-	@Override
-	public void relationReadLock(RelationInternals relation) {
-		globalReadLock();
-	}
-
-	@Override
-	public void relationWriteLock(RelationInternals relation) {
-		globalWriteLock();
-	}
-
-	@Override
-	public void relationReadUnlock(RelationInternals relation) {
-		globalReadUnlock();
-	}
-
-	@Override
-	public void relationWriteUnlock(RelationInternals relation) {
-		globalWriteUnlock();
 	}
 
 }

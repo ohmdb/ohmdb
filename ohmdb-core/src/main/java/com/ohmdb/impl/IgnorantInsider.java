@@ -21,7 +21,7 @@ package com.ohmdb.impl;
  */
 
 import com.ohmdb.abstracts.DbInsider;
-import com.ohmdb.numbers.Numbers;
+import com.ohmdb.abstracts.Numbers;
 
 public class IgnorantInsider implements DbInsider {
 

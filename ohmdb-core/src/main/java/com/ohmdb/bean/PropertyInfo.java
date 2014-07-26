@@ -26,14 +26,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.ohmdb.abstracts.Column;
+import com.ohmdb.abstracts.ComplexIndex;
 import com.ohmdb.abstracts.Index;
+import com.ohmdb.abstracts.Prop;
 import com.ohmdb.api.Transformer;
-import com.ohmdb.index.ComplexIndex;
 import com.ohmdb.util.Errors;
 import com.ohmdb.util.TypeKind;
 import com.ohmdb.util.U;
 
-public class PropertyInfo {
+public class PropertyInfo implements Prop {
 
 	private String name;
 
@@ -51,7 +52,7 @@ public class PropertyInfo {
 
 	private Class<?> type;
 
-	private TypeKind typeKind;
+	private TypeKind kind;
 
 	private Set<ComplexIndex<?>> complexIndices = new HashSet<ComplexIndex<?>>();
 
@@ -102,6 +103,7 @@ public class PropertyInfo {
 		this.index = index;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -110,6 +112,7 @@ public class PropertyInfo {
 		this.name = name;
 	}
 
+	@Override
 	public Object get(Object obj) {
 		try {
 			if (field != null) {
@@ -134,6 +137,7 @@ public class PropertyInfo {
 		}
 	}
 
+	@Override
 	public Class<?> getType() {
 		if (type == null) {
 			// TODO: improve inference from getter and setter
@@ -142,12 +146,12 @@ public class PropertyInfo {
 		return type;
 	}
 
-	public TypeKind getTypeKind() {
-		if (typeKind == null) {
-			typeKind = U.kindOf(getType());
+	public TypeKind getKind() {
+		if (kind == null) {
+			kind = U.kindOf(getType());
 		}
 
-		return typeKind;
+		return kind;
 	}
 
 	public Transformer<Object> getTransformer() {

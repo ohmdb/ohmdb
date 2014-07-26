@@ -20,14 +20,18 @@ package com.ohmdb.join;
  * #L%
  */
 
+import com.ohmdb.abstracts.FutureIds;
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.ReadOnlyRelation;
 import com.ohmdb.api.Links;
-import com.ohmdb.join.futureid.FutureIds;
+import com.ohmdb.dsl.join.AJoin;
+import com.ohmdb.dsl.join.JoinConfig;
+import com.ohmdb.dsl.join.JoinSide;
+import com.ohmdb.dsl.join.LinkMatcher;
 import com.ohmdb.links.LinksBuilder;
-import com.ohmdb.numbers.Numbers;
 import com.ohmdb.util.Errors;
-import com.ohmdb.util.LINKS;
 import com.ohmdb.util.U;
+import com.ohmdb.util.UTILS;
 
 public class DefaultLinkMatcher implements LinkMatcher {
 
@@ -63,7 +67,7 @@ public class DefaultLinkMatcher implements LinkMatcher {
 			builders = new LinksBuilder[joinSize];
 
 			for (int i = 0; i < builders.length; i++) {
-				builders[i] = LINKS.builder();
+				builders[i] = UTILS.linkBuilder();
 			}
 		}
 

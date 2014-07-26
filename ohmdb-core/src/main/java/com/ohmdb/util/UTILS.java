@@ -20,66 +20,27 @@ package com.ohmdb.util;
  * #L%
  */
 
-import com.ohmdb.abstracts.Any;
+import java.util.Arrays;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.SortedSet;
+
+import com.ohmdb.abstracts.Numbers;
 import com.ohmdb.abstracts.RWRelation;
 import com.ohmdb.abstracts.RelationInternals;
-import com.ohmdb.api.Ids;
-import com.ohmdb.api.Search;
-import com.ohmdb.api.Table;
+import com.ohmdb.api.Links;
 import com.ohmdb.exception.OhmDBException;
-import com.ohmdb.join.futureid.AnyFutureIds;
-import com.ohmdb.join.futureid.FutureIds;
-import com.ohmdb.join.futureid.PreloadedFutureIds;
-import com.ohmdb.join.futureid.ProvidedFutureIds;
-import com.ohmdb.join.futureid.SearchFutureIds;
-import com.ohmdb.join.futureid.TableFutureIds;
-import com.ohmdb.numbers.Numbers;
+import com.ohmdb.links.LinksBuilder;
+import com.ohmdb.links.LinksImpl;
+import com.ohmdb.links.NoLinks;
+import com.ohmdb.numbers.Nums;
 
 public class UTILS {
 
 	public static final boolean PROD = false;
 
-	public static FutureIds futureIds(Numbers ids) {
-		return new PreloadedFutureIds(ids);
-	}
-
-	public static FutureIds[] futureIds(Numbers[] ids) {
-
-		FutureIds[] futureIds = new FutureIds[ids.length];
-
-		for (int i = 0; i < ids.length; i++) {
-			Check.notNull(ids[i], "IDs #" + i);
-			futureIds[i] = new PreloadedFutureIds(ids[i]);
-		}
-
-		return futureIds;
-	}
-
-	public static FutureIds[] futureIds(Ids<?>[] providers) {
-		FutureIds[] futureIds = new FutureIds[providers.length];
-
-		for (int i = 0; i < providers.length; i++) {
-			Ids<?> provider = providers[i];
-			if (provider instanceof Search<?>) {
-				futureIds[i] = new SearchFutureIds((Search<?>) provider);
-			} else if (provider instanceof Table<?>) {
-				futureIds[i] = new TableFutureIds((Table<?>) provider);
-			} else if (provider instanceof Any<?>) {
-				futureIds[i] = new AnyFutureIds((Any<?>) provider);
-			} else {
-				futureIds[i] = new ProvidedFutureIds(provider);
-			}
-		}
-
-		return futureIds;
-	}
-
 	public static OhmDBException err(String msg) {
 		return new OhmDBException(msg);
-	}
-
-	public static <T> FutureIds futureIds(Any<T> any) {
-		return new AnyFutureIds(any);
 	}
 
 	public static void link(RWRelation rel, long from, Numbers tos) {
@@ -106,29 +67,113 @@ public class UTILS {
 		}
 	}
 
-	public static long getId(Object obj) {
-		Object id = ClassUtils.getPropValue(obj, "id");
+	public static final Links NO_PATHS = new NoLinks();
 
-		if (id == null) {
-			throw Errors.rte("The field 'id' cannot be null!");
+	public static boolean equal(Links[] l1, Links[] l2) {
+		if (l1.length != l2.length) {
+			return false;
 		}
 
-		if (id instanceof Long) {
-			Long num = (Long) id;
-			return num;
-		} else {
-			throw Errors.rte("The field 'id' must have type 'long', but it has: " + id.getClass());
+		for (int i = 0; i < l1.length; i++) {
+			if (!equal(l1[i], l2[i])) {
+				return false;
+			}
 		}
+
+		return true;
 	}
 
-	public static long[] getIds(Object... objs) {
-		long[] ids = new long[objs.length];
-
-		for (int i = 0; i < objs.length; i++) {
-			ids[i] = getId(objs[i]);
+	public static boolean equal(Links p1, Links p2) {
+		if (p1 == p2) {
+			return true;
 		}
 
-		return ids;
+		if (p1 == null || p2 == null) {
+			return false;
+		}
+
+		if (p1.size() != p2.size()) {
+			return false;
+		}
+
+		int size = p1.size();
+		for (int i = 0; i < size; i++) {
+			if (p1.from(i) != p2.from(i) || !Arrays.equals(p1.to(i), p2.to(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static String toString(Links paths) {
+		if (paths == null) {
+			return "null";
+		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+
+		for (int i = 0; i < paths.size(); i++) {
+			if (i > 0) {
+				sb.append(", ");
+			}
+
+			sb.append(paths.from(i));
+			long[] nums = paths.to(i);
+			if (nums != null) {
+				sb.append(" : ");
+				sb.append(U.text(nums));
+				sb.append(" ");
+			}
+		}
+
+		sb.append("}");
+		return sb.toString();
+	}
+
+	public static Links from(long[] keys, long[][] related) {
+		assert keys.length == related.length;
+		assert Nums.validate(keys, 0, keys.length);
+
+		return new LinksImpl(keys, related);
+	}
+
+	public static Links linksFromTos(long[][] fromTos) {
+		int size = fromTos.length;
+		long[] keys = new long[size];
+		long[][] numbers = new long[size][];
+
+		for (int i = 0; i < size; i++) {
+			long[] fromTo = fromTos[i];
+			keys[i] = fromTo[0];
+
+			int len = fromTo.length - 1;
+			numbers[i] = new long[len];
+			System.arraycopy(fromTo, 1, numbers[i], 0, len);
+		}
+
+		return from(keys, numbers);
+	}
+
+	public static Links linksFrom(SortedMap<Long, SortedSet<Long>> links) {
+		int size = links.size();
+		long[] keys = new long[size];
+		long[][] numbers = new long[size][];
+
+		int i = 0;
+		for (Entry<Long, SortedSet<Long>> fromTo : links.entrySet()) {
+			keys[i] = fromTo.getKey();
+			SortedSet<Long> values = fromTo.getValue();
+			numbers[i] = Nums.arrFrom(values);
+			i++;
+		}
+
+		return from(keys, numbers);
+	}
+
+	public static LinksBuilder linkBuilder() {
+		return new LinksBuilder();
 	}
 
 }

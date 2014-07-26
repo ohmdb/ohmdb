@@ -20,9 +20,9 @@ package com.ohmdb.dsl;
  * #L%
  */
 
+import com.ohmdb.api.Db;
 import com.ohmdb.api.JoinResult;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.Db;
 import com.ohmdb.api.OneToMany;
 import com.ohmdb.api.Search;
 import com.ohmdb.api.Table;
