@@ -70,7 +70,7 @@ public class Measure {
 
 		System.out.println(String.format(" - total time for %s '%s' operations: %s ms, average: %s/sec, mem=%sMB",
 				count, name, ms, avgs, mem));
-		
+
 		return ms;
 	}
 
@@ -93,6 +93,10 @@ public class Measure {
 			System.out.println(String.format("FOR '%s': AVERAGE = %.0fK/sec, BEST = %.0fK/sec, WORST = %.0fK/sec",
 					entry.getKey(), stat.avg(), stat.best, stat.worst));
 		}
+	}
+
+	public static int getCount() {
+		return count;
 	}
 
 }
