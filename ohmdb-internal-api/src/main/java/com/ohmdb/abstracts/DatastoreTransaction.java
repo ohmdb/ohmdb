@@ -7,7 +7,7 @@ import com.ohmdb.api.TransactionListener;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-internal-api
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

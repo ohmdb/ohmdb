@@ -2,7 +2,7 @@ package com.ohmdb.dsl.rel;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-dsl
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

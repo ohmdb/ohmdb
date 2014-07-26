@@ -2,7 +2,7 @@ package com.ohmdb.test;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-test
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

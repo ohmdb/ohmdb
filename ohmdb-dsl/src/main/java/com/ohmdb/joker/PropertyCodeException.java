@@ -2,7 +2,7 @@ package com.ohmdb.joker;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-dsl
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

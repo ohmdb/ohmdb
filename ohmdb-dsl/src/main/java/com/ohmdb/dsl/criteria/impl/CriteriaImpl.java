@@ -2,7 +2,7 @@ package com.ohmdb.dsl.criteria.impl;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-dsl
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

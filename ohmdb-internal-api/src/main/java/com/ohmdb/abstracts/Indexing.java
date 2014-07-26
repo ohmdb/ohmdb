@@ -2,7 +2,7 @@ package com.ohmdb.abstracts;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-internal-api
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

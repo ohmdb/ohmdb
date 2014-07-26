@@ -2,7 +2,7 @@ package com.ohmdb.numbers;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-utils
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%

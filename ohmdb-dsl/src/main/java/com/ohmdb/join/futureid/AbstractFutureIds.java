@@ -5,7 +5,7 @@ import com.ohmdb.abstracts.Numbers;
 
 /*
  * #%L
- * ohmdb-core
+ * ohmdb-dsl
  * %%
  * Copyright (C) 2013 - 2014 Nikolche Mihajlovski
  * %%
