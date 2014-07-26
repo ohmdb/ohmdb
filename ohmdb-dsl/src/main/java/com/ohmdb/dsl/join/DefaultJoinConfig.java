@@ -65,7 +65,9 @@ public class DefaultJoinConfig implements JoinConfig {
 
 	@Override
 	public void initialize(JoinInitializer initializer) {
-		this.sides = initializer.optimize(joins, futureIds);
+		if (this.sides == null) {
+			this.sides = initializer.optimize(joins, futureIds);
+		}
 	}
 
 }

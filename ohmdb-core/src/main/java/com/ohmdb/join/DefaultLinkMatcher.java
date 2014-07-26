@@ -55,8 +55,9 @@ public class DefaultLinkMatcher implements LinkMatcher {
 	}
 
 	private boolean doMatch(JoinConfig config, Links[] links, boolean exists) {
+		config.initialize(DefaultJoinInitializer.INSTANCE);
+		
 		AJoin[] joins = config.getJoins();
-
 		JoinSide[] sides = config.sides();
 
 		int joinSize = joins.length;
