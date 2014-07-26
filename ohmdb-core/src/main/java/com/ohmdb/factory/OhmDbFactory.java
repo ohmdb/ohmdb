@@ -22,11 +22,25 @@ package com.ohmdb.factory;
 
 import com.ohmdb.api.Db;
 import com.ohmdb.impl.OhmDBImpl;
+import com.ohmdb.util.Errors;
+import com.ohmdb.util.U;
 
 public class OhmDbFactory {
 
 	public static Db newInstance(String filename) {
-		return filename != null ? new OhmDBImpl(filename) : new OhmDBImpl();
+		Throwable err = null;
+
+		for (int i = 0; i < 3; i++) {
+			try {
+				return filename != null ? new OhmDBImpl(filename) : new OhmDBImpl();
+			} catch (Exception e) {
+				e.printStackTrace();
+				err = e;
+				U.sleep(1000);
+			}
+		}
+
+		throw Errors.rte("Cannot initialize the database!", err);
 	}
 
 }
