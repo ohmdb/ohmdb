@@ -34,11 +34,6 @@ import com.ohmdb.test.TestCommons;
 public class CRUDTest extends TestCommons {
 
 	@Test
-	public void minimalisticCRUD() {
-		long id = DB.insert(new Person("John Doe", 33));
-	}
-
-	@Test
 	public void shouldCRUD() {
 		Table<Person> persons = personsTable();
 
