@@ -92,7 +92,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 	private final ByteBuffer BUF16 = ByteBuffer.allocateDirect(16);
 
-	private final Zones2 zones = new Zones2();
+	private final Zones zones = new Zones();
 
 	private final StoreInfo infos = new StoreInfo();
 
@@ -379,7 +379,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 	}
 
 	private void writeTx(long txId) throws IOException {
-		Set<Long> slots = zones.occupy(aggregatedSize, aggregatedSize);
+		Set<Long> slots = zones.occupy(aggregatedSize);
 		assert slots.size() == aggregatedSize;
 
 		BUF.position(0);
@@ -826,21 +826,9 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 			buf.position((int) offset * BLOCK_SIZE);
 
-			long aa;
-			try {
-				aa = negDecode(buf.getLong());
-			} catch (Throwable e) {
-				System.out.println("AA " + offset + ":" + buf.position() + ":: " + e.getMessage());
-				throw Errors.rte("");
-			}
+			long aa = negDecode(buf.getLong());
 
-			long bb;
-			try {
-				bb = negDecode(buf.getLong());
-			} catch (Throwable e) {
-				System.out.println("BB " + offset + ":" + buf.position() + ":: " + e.getMessage());
-				throw Errors.rte("");
-			}
+			long bb = negDecode(buf.getLong());
 
 			hasMore = aa != bb;
 

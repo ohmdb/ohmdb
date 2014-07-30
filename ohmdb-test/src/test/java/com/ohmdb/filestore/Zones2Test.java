@@ -20,137 +20,120 @@ package com.ohmdb.filestore;
  * #L%
  */
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.testng.annotations.Test;
 
 import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.Measure;
+import com.ohmdb.util.U;
 
 public class Zones2Test extends TestCommons {
 
-	private static final int MAX = Integer.MAX_VALUE;
-
 	@Test
-	public void shoudOccupyAndFreeZones() {
-		Zones2 zone = new Zones2();
+	public void shoudOccupyAndReleaseSlots() {
+		Zones zone = new Zones();
 
-		// Set<Long> released = new HashSet<Long>();
+		Set<Long> occupied = new HashSet<Long>();
 
-		// FIXME finish the test
+		int total = 0;
+
 		for (int i = 0; i < 100; i++) {
-			int n = rnd(30000);
-			Set<Long> positions = zone.occupy(n, n * 2);
-			isTrue(positions.size() >= n);
-			for (long pos : positions) {
+			int n = (rnd(10000) + 1) * 2;
+			Set<Long> released = new HashSet<Long>();
+
+			Set<Long> positions = zone.occupy(n);
+			eq(positions.size(), n);
+
+			occupied.addAll(positions);
+			total += positions.size();
+
+			for (long pos : occupied) {
 				if (rnd(2) == 0) {
 					zone.release(pos);
-					// released.add(pos);
+					released.add(pos);
+					total--;
 				}
 			}
+			occupied.removeAll(released);
+
+			eq(zone.cardinality(), total);
 		}
 	}
 
 	@Test
 	public void shoudPerformWell() {
-		Zones2 zone = new Zones2();
+		Zones zone = new Zones();
 
 		int total = 10;
 
 		Measure.start(total);
 
 		for (int i = 0; i < total; i++) {
-			Set<Long> positions = zone.occupy(100000, 100000);
+			Set<Long> positions = zone.occupy(100000);
 			for (long pos : positions) {
 				zone.release(pos);
 			}
 		}
 
 		Measure.finish();
-
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void shoudOccupyOptimal() {
-		Zones2 zone = new Zones2();
+		Zones zone = new Zones();
+
+		zone.occupy(1000);
 
 		zone.releaseAll(10, 20);
-		zone.releaseAll(100001, 100002, 100003);
+		zone.releaseAll(101, 102, 103);
 
-		Set<Long> pos = zone.occupy(1, MAX);
-		eq(pos.size(), 2);
+		eq(zone.occupy(1), U.set(10L));
+		eq(zone.occupy(1), U.set(20L));
 
-		zone.release(20);
+		zone.releaseAll(10, 20);
 
-		Set<Long> pos2 = zone.occupy(2, MAX);
-		eq(pos2.size(), 3);
+		eq(zone.occupy(2), U.set(10L, 20L));
 
-		zone.release(100001);
+		zone.releaseAll(10, 20);
 
-		Set<Long> pos3 = zone.occupy(1, MAX);
-		eq(pos3.size(), 1);
-
-		Set<Long> pos4 = zone.occupy(1, MAX);
-		eq(pos4.size(), 1);
-
+		// the first and smallest seq, big enough for 3
+		eq(zone.occupy(3), U.set(101L, 102L, 103L));
 	}
 
 	@Test
-	public void shoudOccupyOptimalWithLimit() {
-		Zones2 zone = new Zones2();
+	public void shoudOccupyFreeSlots() {
+		Zones zone = new Zones();
 
-		zone.releaseAll(10, 20, 30);
-
-		eq(zone.occupy(1, 2).size(), 2);
-
-		zone.release(40);
-
-		eq(zone.occupy(1, 5).size(), 2);
-
-		eq(zone.occupy(1, 1000000).size(), zone.areaSize());
-	}
-
-	@Test
-	public void shoudOccupyExpand() {
-		Zones2 zone = new Zones2();
-
-		eq(zone.occupy(1, 1000000).size(), zone.areaSize());
-	}
-
-	@Test
-	public void shoudOccupyExpandWithLimit() {
-		Zones2 zone = new Zones2();
-
-		eq(zone.occupy(1, 10).size(), 10);
-
-		eq(zone.occupy(1, MAX).size(), zone.areaSize() - 10);
+		for (int i = 0; i < 1000; i++) {
+			eq(zone.occupy(1).size(), 1);
+		}
 	}
 
 	@Test
 	public void shoudFillFromOcupied() {
-		Zones2 zone = new Zones2();
+		Zones zone = new Zones();
 
-		zone.occupied(123);
-		zone.occupied(124);
+		zone.occupied(7);
+		zone.occupied(8);
+		zone.occupied(10);
+		zone.occupied(15);
 
-		Set<Long> slots = zone.occupy(1, MAX);
-		eq(slots.size(), zone.areaSize() - 2);
-
-		isTrue(slots.contains(0L));
-		isTrue(slots.contains(100L));
-		isTrue(slots.contains(200L));
-		isTrue(slots.contains((long) zone.areaSize() - 1));
-
-		isFalse(slots.contains(123L));
-		isFalse(slots.contains(124L));
+		eq(zone.occupy(3), U.set(0L, 1L, 2L));
+		eq(zone.occupy(1), U.set(3L));
+		eq(zone.occupy(2), U.set(4L, 5L));
+		eq(zone.occupy(2), U.set(6L, 9L));
+		eq(zone.occupy(1), U.set(11L));
+		eq(zone.occupy(6), U.set(12L, 13L, 14L, 16L, 17L, 18L));
 	}
 
 	@Test
 	public void shoudOccupyInOrder() {
-		Zones2 zone = new Zones2();
+		Zones zone = new Zones();
 
 		for (int i = 0; i < 1000; i++) {
-			Set<Long> positions = zone.occupy(1, 1);
+			Set<Long> positions = zone.occupy(1);
 			eq(positions.size(), 1);
 
 			long pos = positions.iterator().next();
@@ -158,17 +141,4 @@ public class Zones2Test extends TestCommons {
 		}
 	}
 
-	@Test
-	public void shoudOccupyInOrderD() {
-		Zones2 zone = new Zones2();
-
-		for (int i = 0; i < 30000; i++) {
-			Set<Long> positions = zone.occupy(1, 1);
-			eq(positions.size(), 1);
-
-			long pos = positions.iterator().next();
-			eq(pos, i);
-		}
-	}
-	
 }

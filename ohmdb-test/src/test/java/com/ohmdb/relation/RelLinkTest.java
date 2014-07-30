@@ -20,47 +20,43 @@ package com.ohmdb.relation;
  * #L%
  */
 
-import java.util.Random;
-
 import org.testng.annotations.Test;
 
 import com.ohmdb.api.Db;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.Ohm;
+import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.U;
 
-public class RelLinkTest {
-
-	private static final Random RND = new Random();
+public class RelLinkTest extends TestCommons {
 
 	private static final String DB_FILENAME = "/tmp/benchmark.db";
 
 	@Test
 	public void testMassiveLinks() {
-		while (true) {
-			try {
-				int usersN = 5000;
-				int friendsN = 20;
+		for (int k = 0; k < 100; k++) {
 
-				U.delete(DB_FILENAME);
+			int a = 100;
+			int b = 50;
 
-				Db db = Ohm.db(DB_FILENAME);
+			U.delete(DB_FILENAME);
 
-				ManyToMany<Object, Object> fr = db.manyToManySymmetric(null, "friends", null);
+			Db db = Ohm.db(DB_FILENAME);
 
-				for (int i = 0; i < usersN; i++) {
-					for (int j = 0; j < friendsN; j++) {
-						fr.link(i, RND.nextInt(usersN));
-					}
+			ManyToMany<Object, Object> fr = db.manyToMany(null, "friends", null);
+
+			long op = 100000000;
+
+			for (int i = 0; i < a; i++) {
+				for (int j = 0; j < b; j++) {
+					fr.link(i, op++);
 				}
-
-				db.shutdown();
-
-				Db db2 = Ohm.db(DB_FILENAME);
-				db2.shutdown();
-			} catch (Exception e) {
-				System.out.println("ERROR !!!!!");
 			}
+
+			db.shutdown();
+
+			Db db2 = Ohm.db(DB_FILENAME);
+			db2.shutdown();
 		}
 	}
 
