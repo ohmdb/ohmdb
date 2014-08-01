@@ -74,7 +74,7 @@ public abstract class TestCommons {
 	protected static final int W = X + 3;
 	protected static final int Q = X + 4;
 
-	protected static final String DB_FILE = tmpFile("ohm", "db").getAbsolutePath();
+	protected static final String DB_FILE = tmpFile("ohm", ".db").getAbsolutePath();
 
 	public static Table<?> TBL1 = new MockTable("TBL1", Nums.arrFromTo(0, 10));
 
@@ -871,7 +871,9 @@ public abstract class TestCommons {
 
 	protected static File tmpFile(String prefix, String suffix) {
 		try {
-			return File.createTempFile(prefix, suffix);
+			File file = File.createTempFile(prefix, suffix);
+			file.deleteOnExit();
+			return file;
 		} catch (IOException e) {
 			throw Errors.rte(e);
 		}
