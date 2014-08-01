@@ -34,11 +34,12 @@ public class StatisticalTest extends TestCommons {
 	protected static final int MINI_REL_COUNT = 20;
 
 	@Test(dataProvider = "num10")
-	public void shouldKeepRelationsBetweenTables(final int factor) {
+	public void randomTableAndRelationOps(int scale) {
+		final int factor = scale + 1; // [1..11]
 
 		final int total = 1000;
 
-		final int threadsFactor = factor + 1; // 1, 2, 3...
+		final int threadsFactor = factor; // 1, 2, 3...
 		final int refreshMs = 20 * factor + 5; // 5, 25, 55...
 
 		final DatabaseCheck db = new DatabaseCheck(refreshMs, threadsFactor);
@@ -228,5 +229,4 @@ public class StatisticalTest extends TestCommons {
 
 		db.execute(total);
 	}
-
 }
