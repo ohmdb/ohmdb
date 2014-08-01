@@ -30,8 +30,6 @@ import com.ohmdb.util.U;
 
 public class RelLinkTest extends TestCommons {
 
-	private static final String DB_FILENAME = "/tmp/benchmark.db";
-
 	@Test
 	public void testMassiveLinks() {
 		for (int k = 0; k < 100; k++) {
@@ -39,9 +37,9 @@ public class RelLinkTest extends TestCommons {
 			int a = 100;
 			int b = 50;
 
-			U.delete(DB_FILENAME);
+			U.delete(DB_FILE);
 
-			Db db = Ohm.db(DB_FILENAME);
+			Db db = Ohm.db(DB_FILE);
 
 			ManyToMany<Object, Object> fr = db.manyToMany(null, "friends", null);
 
@@ -55,7 +53,7 @@ public class RelLinkTest extends TestCommons {
 
 			db.shutdown();
 
-			Db db2 = Ohm.db(DB_FILENAME);
+			Db db2 = Ohm.db(DB_FILE);
 			db2.shutdown();
 		}
 	}

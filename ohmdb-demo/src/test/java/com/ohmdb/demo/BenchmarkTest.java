@@ -21,23 +21,36 @@ package com.ohmdb.demo;
  */
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.api.Db;
 import com.ohmdb.api.Ids;
 import com.ohmdb.api.Join;
 import com.ohmdb.api.ManyToMany;
 import com.ohmdb.api.Ohm;
-import com.ohmdb.api.Db;
 import com.ohmdb.api.Table;
+import com.ohmdb.util.Errors;
 import com.ohmdb.util.Measure;
 
 public class BenchmarkTest {
 
 	private static final Random RND = new Random();
 
-	private static final String DB_FILENAME = "/tmp/benchmark.db";
+	private static final String DB_FILENAME;
+
+	static {
+		File tmpFile;
+		try {
+			tmpFile = File.createTempFile("benchmark", ".db");
+		} catch (IOException e) {
+			throw Errors.rte(e);
+		}
+		tmpFile.deleteOnExit();
+		DB_FILENAME = tmpFile.getAbsolutePath();
+	}
 
 	@Test
 	public void testBenchmark() {

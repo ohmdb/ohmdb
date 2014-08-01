@@ -34,16 +34,14 @@ import com.ohmdb.util.U;
 
 public class FileStoreTransactPerfTest extends TestCommons {
 
-	private static final String FILE = "/tmp/store";
-
 	private static final IntCodec INT_CODEC = new IntCodec();
 
 	@Test(timeOut = 30000)
 	public void shoudPerformWell() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
-		FileStore store = new FileStore(FILE, null, INT_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, null, INT_CODEC, stats, false, DB_REF);
 
 		int count = 300 * 1000;
 
@@ -64,7 +62,7 @@ public class FileStoreTransactPerfTest extends TestCommons {
 		store.stop();
 
 		DataLoader loader = new DataLoader();
-		new FileStore(FILE, loader, INT_CODEC, stats, false, null);
+		new FileStore(DB_FILE, loader, INT_CODEC, stats, false, null);
 		eq(loader.getData().count(), count);
 	}
 

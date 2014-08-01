@@ -35,21 +35,19 @@ import com.ohmdb.util.Measure;
 
 public class FileStoreTest extends TestCommons {
 
-	private static final String FILE = "/tmp/store";
-
 	private static final IntCodec INT_CODEC = new IntCodec();
 
 	private static final StrCodec STR_CODEC = new StrCodec();
 
 	@Test
 	public void shoudSimplyWork() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
 		Map<Long, Object> check = storeMap();
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		FileStore store = new FileStore(FILE, loader, STR_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, loader, STR_CODEC, stats, false, DB_REF);
 
 		store.write(123, "abc");
 		check.put(123L, "abc");
@@ -57,7 +55,7 @@ public class FileStoreTest extends TestCommons {
 		store.stop();
 
 		MapBackedStoreLoader loader2 = new MapBackedStoreLoader();
-		new FileStore(FILE, loader2, STR_CODEC, stats, false, DB_REF);
+		new FileStore(DB_FILE, loader2, STR_CODEC, stats, false, DB_REF);
 		Map<Long, Object> values = loader2.getValues();
 
 		eq(values, check);
@@ -65,10 +63,10 @@ public class FileStoreTest extends TestCommons {
 
 	@Test
 	public void shoudReuseOldSpace() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
-		FileStore store = new FileStore(FILE, null, INT_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, null, INT_CODEC, stats, false, DB_REF);
 
 		int count = 100;
 
@@ -89,7 +87,7 @@ public class FileStoreTest extends TestCommons {
 
 	@Test
 	public void shoudSupportAnyValue() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		Random rnd = new Random();
 		OhmDBStats stats = new OhmDBStats();
 
@@ -97,7 +95,7 @@ public class FileStoreTest extends TestCommons {
 
 		for (int n = 0; n < 50; n++) {
 			MapBackedStoreLoader loader = new MapBackedStoreLoader();
-			FileStore store = new FileStore(FILE, loader, INT_CODEC, stats, false, DB_REF);
+			FileStore store = new FileStore(DB_FILE, loader, INT_CODEC, stats, false, DB_REF);
 
 			for (int i = 0; i < rnd.nextInt(10); i++) {
 				long key = rnd.nextInt(1000);
@@ -110,7 +108,7 @@ public class FileStoreTest extends TestCommons {
 		}
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		new FileStore(FILE, loader, INT_CODEC, stats, true, DB_REF);
+		new FileStore(DB_FILE, loader, INT_CODEC, stats, true, DB_REF);
 		Map<Long, Object> values = loader.getValues();
 
 		eq(values, check);
@@ -118,14 +116,14 @@ public class FileStoreTest extends TestCommons {
 
 	@Test
 	public void shoudPersistChanges() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
 		Map<Long, Object> check = storeMap();
 
 		for (int n = 0; n < 200; n++) {
 			MapBackedStoreLoader loader = new MapBackedStoreLoader();
-			FileStore store = new FileStore(FILE, loader, INT_CODEC, stats, false, DB_REF);
+			FileStore store = new FileStore(DB_FILE, loader, INT_CODEC, stats, false, DB_REF);
 
 			for (int i = 1; i <= 10; i++) {
 				long key = i * 10;
@@ -138,7 +136,7 @@ public class FileStoreTest extends TestCommons {
 		}
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		new FileStore(FILE, loader, INT_CODEC, stats, true, DB_REF);
+		new FileStore(DB_FILE, loader, INT_CODEC, stats, true, DB_REF);
 		Map<Long, Object> values = loader.getValues();
 
 		eq(values, check);
@@ -146,10 +144,10 @@ public class FileStoreTest extends TestCommons {
 
 	@Test(timeOut = 5000)
 	public void shoudPerformWell() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
-		FileStore store = new FileStore(FILE, null, INT_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, null, INT_CODEC, stats, false, DB_REF);
 
 		int count = 10;
 		int iterations = 10;
@@ -176,7 +174,7 @@ public class FileStoreTest extends TestCommons {
 
 	@Test
 	public void shoudSupportBigValuesAtTheBeginning() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
 		String big = big();
@@ -184,7 +182,7 @@ public class FileStoreTest extends TestCommons {
 		Map<Long, Object> check = storeMap();
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		FileStore store = new FileStore(FILE, loader, STR_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, loader, STR_CODEC, stats, false, DB_REF);
 
 		store.write(1, big);
 		check.put(1L, big);
@@ -198,7 +196,7 @@ public class FileStoreTest extends TestCommons {
 		store.stop();
 
 		MapBackedStoreLoader loader2 = new MapBackedStoreLoader();
-		new FileStore(FILE, loader2, STR_CODEC, stats, true, DB_REF);
+		new FileStore(DB_FILE, loader2, STR_CODEC, stats, true, DB_REF);
 		Map<Long, Object> values = loader2.getValues();
 
 		eq(values, check);
@@ -206,7 +204,7 @@ public class FileStoreTest extends TestCommons {
 
 	@Test
 	public void shoudSupportBigValuesInTheMiddle() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
 		String big = big();
@@ -214,7 +212,7 @@ public class FileStoreTest extends TestCommons {
 		Map<Long, Object> check = storeMap();
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		FileStore store = new FileStore(FILE, loader, STR_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, loader, STR_CODEC, stats, false, DB_REF);
 
 		store.write(1, "a");
 		check.put(1L, "a");
@@ -228,7 +226,7 @@ public class FileStoreTest extends TestCommons {
 		store.stop();
 
 		MapBackedStoreLoader loader2 = new MapBackedStoreLoader();
-		new FileStore(FILE, loader2, STR_CODEC, stats, true, DB_REF);
+		new FileStore(DB_FILE, loader2, STR_CODEC, stats, true, DB_REF);
 		Map<Long, Object> values = loader2.getValues();
 
 		eq(values, check);
@@ -236,7 +234,7 @@ public class FileStoreTest extends TestCommons {
 
 	@Test
 	public void shoudSupportBigValuesAtTheEnd() throws IOException {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
 		String big = big();
@@ -244,7 +242,7 @@ public class FileStoreTest extends TestCommons {
 		Map<Long, Object> check = storeMap();
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		FileStore store = new FileStore(FILE, loader, STR_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, loader, STR_CODEC, stats, false, DB_REF);
 
 		store.write(1, "a");
 		check.put(1L, "a");
@@ -258,7 +256,7 @@ public class FileStoreTest extends TestCommons {
 		store.stop();
 
 		MapBackedStoreLoader loader2 = new MapBackedStoreLoader();
-		new FileStore(FILE, loader2, STR_CODEC, stats, true, DB_REF);
+		new FileStore(DB_FILE, loader2, STR_CODEC, stats, true, DB_REF);
 		Map<Long, Object> values = loader2.getValues();
 
 		eq(values, check);

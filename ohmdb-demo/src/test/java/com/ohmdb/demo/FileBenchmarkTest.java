@@ -20,6 +20,7 @@ package com.ohmdb.demo;
  * #L%
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -28,6 +29,7 @@ import java.util.Random;
 
 import org.testng.annotations.Test;
 
+import com.ohmdb.util.Errors;
 import com.ohmdb.util.Measure;
 
 public class FileBenchmarkTest {
@@ -38,13 +40,24 @@ public class FileBenchmarkTest {
 
 	static final Random rnd = new Random();
 
+	private static final String FILENAME;
+
+	static {
+		File tmpFile;
+		try {
+			tmpFile = File.createTempFile("benchmark", ".db");
+		} catch (IOException e) {
+			throw Errors.rte(e);
+		}
+		tmpFile.deleteOnExit();
+		FILENAME = tmpFile.getAbsolutePath();
+	}
+
 	@Test
 	public void benchmarkRandomWrites() throws Exception {
 		ByteBuffer BUF = ByteBuffer.allocateDirect(64);
 
-		String s = "/tmp/ohmdb-demo.db";
-
-		RandomAccessFile ff = new RandomAccessFile(s, "rw");
+		RandomAccessFile ff = new RandomAccessFile(FILENAME, "rw");
 
 		int count = 100;
 		int mm = 10;

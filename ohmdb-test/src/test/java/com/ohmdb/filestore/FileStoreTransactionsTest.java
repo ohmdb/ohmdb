@@ -33,8 +33,6 @@ import com.ohmdb.test.TestCommons;
 
 public class FileStoreTransactionsTest extends TestCommons {
 
-	private static final String FILE = "/tmp/store";
-
 	private static final StrCodec STR_CODEC = new StrCodec();
 
 	// TODO: multiple transactions
@@ -42,13 +40,13 @@ public class FileStoreTransactionsTest extends TestCommons {
 
 	@Test
 	public void shoudSupportTransactions() {
-		new File(FILE).delete();
+		new File(DB_FILE).delete();
 		OhmDBStats stats = new OhmDBStats();
 
 		Map<Long, Object> check = storeMap();
 
 		MapBackedStoreLoader loader = new MapBackedStoreLoader();
-		FileStore store = new FileStore(FILE, loader, STR_CODEC, stats, false, DB_REF);
+		FileStore store = new FileStore(DB_FILE, loader, STR_CODEC, stats, false, DB_REF);
 
 		Map<DbStats, Object> statss1 = store.getStats();
 		System.out.println(statss1);
@@ -68,7 +66,7 @@ public class FileStoreTransactionsTest extends TestCommons {
 		store.shutdown();
 
 		MapBackedStoreLoader loader2 = new MapBackedStoreLoader();
-		FileStore store2 = new FileStore(FILE, loader2, STR_CODEC, stats, false, DB_REF);
+		FileStore store2 = new FileStore(DB_FILE, loader2, STR_CODEC, stats, false, DB_REF);
 
 		Map<Long, Object> values = loader2.getValues();
 		eq(values, check);
@@ -92,7 +90,7 @@ public class FileStoreTransactionsTest extends TestCommons {
 		store2.shutdown();
 
 		MapBackedStoreLoader loader3 = new MapBackedStoreLoader();
-		FileStore store3 = new FileStore(FILE, loader3, STR_CODEC, stats, true, DB_REF);
+		FileStore store3 = new FileStore(DB_FILE, loader3, STR_CODEC, stats, true, DB_REF);
 
 		values = loader3.getValues();
 		eq(values, check);
