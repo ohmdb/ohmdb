@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ohmdb</groupId>
 		<artifactId>ohmdb</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ohmdb-internal-api</artifactId>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>com.ohmdb</groupId>
 			<artifactId>ohmdb-api</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

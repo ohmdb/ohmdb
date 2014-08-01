@@ -10,7 +10,7 @@
 
 	<groupId>com.ohmdb</groupId>
 	<artifactId>ohmdb</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>OhmDB</name>
@@ -43,7 +43,7 @@
 		<connection>scm:git:git://github.com/ohmdb/ohmdb.git</connection>
 		<developerConnection>scm:git:git@github.com:ohmdb/ohmdb.git</developerConnection>
 		<url>https://github.com/ohmdb/ohmdb</url>
-	  <tag>ohmdb-1.0.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<properties>
