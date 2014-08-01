@@ -20,54 +20,45 @@ package com.ohmdb.test;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 public class SynchronizationCheck extends TestCommons {
 
-	private final Set<Object> writing = new HashSet<Object>();
+	Thread writter;
 
-	private final Map<Object, Long> reading = new HashMap<Object, Long>();
+	int writeCount = 0;
+
+	int readCount = 0;
 
 	public synchronized void startWrite(Object key) {
-		isFalse(writing.contains(key));
-		isFalse(reading.containsKey(key));
-
-		writing.add(key);
+		isTrue(writter == Thread.currentThread() || notWriting());
+		
+		writter = Thread.currentThread();
+		writeCount++;
 	}
 
 	public synchronized void endWrite(Object key) {
-		isTrue(writing.contains(key));
+		isTrue(writter == Thread.currentThread());
+		isTrue(writeCount > 0);
+		
+		writeCount--;
 
-		writing.remove(key);
+		if (writeCount == 0) {
+			writter = null;
+		}
 	}
 
 	public synchronized void startRead(Object key) {
-		isFalse(writing.contains(key));
-
-		Long counter = reading.get(key);
-
-		if (counter == null) {
-			counter = 1L;
-		} else {
-			counter++;
-		}
-
-		reading.put(key, counter);
+		isTrue(writter == Thread.currentThread() || notWriting());
+		readCount++;
 	}
 
 	public synchronized void endRead(Object key) {
-		Long counter = reading.get(key);
+		isTrue(writter == Thread.currentThread() || notWriting());
+		isTrue(readCount > 0);
+		readCount--;
+	}
 
-		isTrue(counter != null);
-
-		if (counter > 1) {
-			reading.put(key, counter - 1);
-		} else {
-			reading.remove(key);
-		}
+	private boolean notWriting() {
+		return writter == null && writeCount == 0;
 	}
 
 }
