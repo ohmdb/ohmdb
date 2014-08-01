@@ -24,16 +24,18 @@ import java.util.BitSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.ohmdb.abstracts.Zones;
 import com.ohmdb.util.Check;
 import com.ohmdb.util.Errors;
 
-public class Zones {
+public class ZonesImpl implements Zones {
 
 	// covers a 16 KB block
 	private final BitSet bs = new BitSet(16 * 1024 / FileStore.BLOCK_SIZE);
 
 	private int cardinality;
 
+	@Override
 	public synchronized Set<Long> occupy(int num) {
 		Check.arg(num > 0, "Ocupation size must be greater than 0!");
 
@@ -79,30 +81,35 @@ public class Zones {
 		return bs.size() - cardinality();
 	}
 
+	@Override
 	public synchronized void occupied(long position) {
 		assert !bs.get((int) position);
 		bs.set((int) position);
 		cardinality++;
 	}
 
+	@Override
 	public synchronized void release(long position) {
 		assert bs.get((int) position);
 		bs.clear((int) position);
 		cardinality--;
 	}
 
+	@Override
 	public synchronized void releaseAll(long... positions) {
 		for (long position : positions) {
 			release(position);
 		}
 	}
 
+	@Override
 	public synchronized void releaseAll(Set<Long> positions) {
 		for (long position : positions) {
 			release(position);
 		}
 	}
 
+	@Override
 	public synchronized void occupiedAll(Set<Long> positions) {
 		for (long position : positions) {
 			occupied(position);

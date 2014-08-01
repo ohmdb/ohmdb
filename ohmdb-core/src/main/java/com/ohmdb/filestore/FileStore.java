@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.ohmdb.abstracts.DataStore;
 import com.ohmdb.abstracts.DatastoreTransaction;
+import com.ohmdb.abstracts.Zones;
 import com.ohmdb.api.Db;
 import com.ohmdb.api.TransactionListener;
 import com.ohmdb.codec.StoreCodec;
@@ -92,7 +93,7 @@ public class FileStore extends AbstractDataStore implements DataStore, Runnable 
 
 	private final ByteBuffer BUF16 = ByteBuffer.allocateDirect(16);
 
-	private final Zones zones = new Zones();
+	private final Zones zones = new ZonesImpl();
 
 	private final StoreInfo infos = new StoreInfo();
 

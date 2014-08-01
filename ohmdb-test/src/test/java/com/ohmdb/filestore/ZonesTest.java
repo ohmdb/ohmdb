@@ -29,11 +29,11 @@ import com.ohmdb.test.TestCommons;
 import com.ohmdb.util.Measure;
 import com.ohmdb.util.U;
 
-public class Zones2Test extends TestCommons {
+public class ZonesTest extends TestCommons {
 
 	@Test
 	public void shoudOccupyAndReleaseSlots() {
-		Zones zone = new Zones();
+		ZonesImpl zone = new ZonesImpl();
 
 		Set<Long> occupied = new HashSet<Long>();
 
@@ -64,7 +64,7 @@ public class Zones2Test extends TestCommons {
 
 	@Test
 	public void shoudPerformWell() {
-		Zones zone = new Zones();
+		ZonesImpl zone = new ZonesImpl();
 
 		int total = 10;
 
@@ -82,7 +82,7 @@ public class Zones2Test extends TestCommons {
 
 	@Test(enabled = false)
 	public void shoudOccupyOptimal() {
-		Zones zone = new Zones();
+		ZonesImpl zone = new ZonesImpl();
 
 		zone.occupy(1000);
 
@@ -104,7 +104,7 @@ public class Zones2Test extends TestCommons {
 
 	@Test
 	public void shoudOccupyFreeSlots() {
-		Zones zone = new Zones();
+		ZonesImpl zone = new ZonesImpl();
 
 		for (int i = 0; i < 1000; i++) {
 			eq(zone.occupy(1).size(), 1);
@@ -113,7 +113,7 @@ public class Zones2Test extends TestCommons {
 
 	@Test
 	public void shoudFillFromOcupied() {
-		Zones zone = new Zones();
+		ZonesImpl zone = new ZonesImpl();
 
 		zone.occupied(7);
 		zone.occupied(8);
@@ -130,7 +130,7 @@ public class Zones2Test extends TestCommons {
 
 	@Test
 	public void shoudOccupyInOrder() {
-		Zones zone = new Zones();
+		ZonesImpl zone = new ZonesImpl();
 
 		for (int i = 0; i < 1000; i++) {
 			Set<Long> positions = zone.occupy(1);
