@@ -37,10 +37,10 @@ public class StatisticalTest extends TestCommons {
 	public void randomTableAndRelationOps(int scale) {
 		final int factor = scale + 1; // [1..11]
 
-		final int total = 1000;
+		final int total = 100;
 
-		final int threadsFactor = factor; // 1, 2, 3...
-		final int refreshMs = 20 * factor + 5; // 5, 25, 55...
+		final int threadsFactor = factor * 10; // 1, 2, 3...
+		final int refreshMs = 200 * factor + 5; // 5, 25, 55...
 
 		final DatabaseCheck db = new DatabaseCheck(refreshMs, threadsFactor);
 
