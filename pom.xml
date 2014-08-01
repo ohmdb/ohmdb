@@ -60,6 +60,7 @@
 		<module>ohmdb-dsl</module>
 		<module>ohmdb-internal-api</module>
 		<module>ohmdb-utils</module>
+		<module>ohmdb-all</module>
 	</modules>
 
 	<build>
