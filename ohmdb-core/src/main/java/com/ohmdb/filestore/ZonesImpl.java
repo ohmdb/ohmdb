@@ -56,6 +56,8 @@ public class ZonesImpl implements Zones {
 		bs.set(bs.length(), bs.length() + num);
 
 		cardinality += num;
+		assert cardinality == bs.cardinality();
+
 		return positions;
 	}
 
@@ -70,6 +72,7 @@ public class ZonesImpl implements Zones {
 
 			if (n == num) {
 				cardinality += num;
+				assert cardinality == bs.cardinality();
 				return positions;
 			}
 		}
@@ -85,6 +88,7 @@ public class ZonesImpl implements Zones {
 	public synchronized void occupied(long position) {
 		assert !bs.get((int) position);
 		bs.set((int) position);
+		assert cardinality == bs.cardinality();
 		cardinality++;
 	}
 
@@ -92,6 +96,7 @@ public class ZonesImpl implements Zones {
 	public synchronized void release(long position) {
 		assert bs.get((int) position);
 		bs.clear((int) position);
+		assert cardinality == bs.cardinality();
 		cardinality--;
 	}
 
@@ -122,6 +127,7 @@ public class ZonesImpl implements Zones {
 	}
 
 	public synchronized int cardinality() {
+		assert cardinality == bs.cardinality();
 		return cardinality;
 	}
 
