@@ -20,6 +20,8 @@ package com.ohmdb.test;
  * #L%
  */
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,8 +74,7 @@ public abstract class TestCommons {
 	protected static final int W = X + 3;
 	protected static final int Q = X + 4;
 
-	protected static final String DB_FILE = "/tmp/db1.db";
-	protected static final String DB_FILE2 = "/tmp/db2.db";
+	protected static final String DB_FILE = tmpFile("ohm", "db").getAbsolutePath();
 
 	public static Table<?> TBL1 = new MockTable("TBL1", Nums.arrFromTo(0, 10));
 
@@ -468,7 +469,6 @@ public abstract class TestCommons {
 		System.out.println("vvvvvvvvvvvv STARTING TEST " + getClass() + " - DB CLEAN-UP vvvvvvvvvvvv");
 
 		U.delete(DB_FILE);
-		U.delete(DB_FILE2);
 
 		db = Ohm.db(DB_FILE);
 		DB_REF = new WeakReference<Db>(db);
@@ -867,6 +867,14 @@ public abstract class TestCommons {
 	@DataProvider
 	public static Object[][] num100000() {
 		return numN(100000);
+	}
+
+	protected static File tmpFile(String prefix, String suffix) {
+		try {
+			return File.createTempFile(prefix, suffix);
+		} catch (IOException e) {
+			throw Errors.rte(e);
+		}
 	}
 
 }

@@ -36,8 +36,6 @@ import com.ohmdb.util.U;
 
 public class DatabaseCheck extends TestCommons {
 
-	private static final String FILENAME = "/tmp/check.db";
-
 	private Db db;
 
 	private final int reloadInterval;
@@ -55,18 +53,18 @@ public class DatabaseCheck extends TestCommons {
 	public DatabaseCheck(int reloadInterval, int threadsFactor) {
 		this.reloadInterval = reloadInterval;
 		this.threadsFactor = threadsFactor;
-		new File(FILENAME).delete();
-		db = Ohm.db(FILENAME);
+		new File(DB_FILE).delete();
+		db = Ohm.db(DB_FILE);
 	}
 
 	public void reload() {
 		lock.writeLock().lock();
 		synchronized (this) {
-			System.out.println("########################### Reloading " + FILENAME);
+			System.out.println("########################### Reloading " + DB_FILE);
 			db.shutdown();
 			U.sleep(1000);
-			db = Ohm.db(FILENAME);
-			System.out.println("########################### Reloaded " + FILENAME);
+			db = Ohm.db(DB_FILE);
+			System.out.println("########################### Reloaded " + DB_FILE);
 		}
 		lock.writeLock().unlock();
 	}
