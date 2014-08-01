@@ -29,18 +29,17 @@ import com.ohmdb.test.Person;
 import com.ohmdb.test.TableShadow;
 import com.ohmdb.test.TestCommons;
 
-public class StatisticalTest2 extends TestCommons {
+public class SimpleTableStatisticalTest extends TestCommons {
 
 	protected static final int MINI_REL_COUNT = 20;
 
-	@Test
-	public void shouldKeepRelationsBetweenTables() {
+	@Test(dataProvider = "num10")
+	public void shouldKeepRelationsBetweenTables(int factor) {
 
 		final int total = 1000;
 
-		final int factor = 10;
-		final int threadsFactor = 1;
-		final int refreshMs = 900;
+		final int threadsFactor = factor + 1; // 1, 2, 3...
+		final int refreshMs = 20 * factor + 5; // 5, 25, 55...
 
 		final DatabaseCheck db = new DatabaseCheck(refreshMs, threadsFactor);
 

@@ -33,14 +33,13 @@ public class StatisticalTest extends TestCommons {
 
 	protected static final int MINI_REL_COUNT = 20;
 
-	@Test
-	public void shouldKeepRelationsBetweenTables() {
+	@Test(dataProvider = "num10")
+	public void shouldKeepRelationsBetweenTables(final int factor) {
 
 		final int total = 1000;
 
-		final int factor = 5;
-		final int threadsFactor = 3;
-		final int refreshMs = 50;
+		final int threadsFactor = factor + 1; // 1, 2, 3...
+		final int refreshMs = 20 * factor + 5; // 5, 25, 55...
 
 		final DatabaseCheck db = new DatabaseCheck(refreshMs, threadsFactor);
 
