@@ -88,16 +88,16 @@ public class ZonesImpl implements Zones {
 	public synchronized void occupied(long position) {
 		assert !bs.get((int) position);
 		bs.set((int) position);
-		assert cardinality == bs.cardinality();
 		cardinality++;
+		assert cardinality == bs.cardinality();
 	}
 
 	@Override
 	public synchronized void release(long position) {
 		assert bs.get((int) position);
 		bs.clear((int) position);
-		assert cardinality == bs.cardinality();
 		cardinality--;
+		assert cardinality == bs.cardinality();
 	}
 
 	@Override
