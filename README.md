@@ -44,6 +44,8 @@ public class Main {
 
 		persons.createIndexOn($p.age);
 		Person[] adults = persons.where($p.age).gte(18).get();
+      
+        db.shutdown();
 	}
 }
 ```
