@@ -25,7 +25,7 @@ Add the following snippet to the `<dependencies>` section in pom.xml:
 
 * Add the following code to your project, and execute it:
  
-```
+```java
 import com.ohmdb.api.*;
 
 class Person { public String name; public int age; }
@@ -54,11 +54,15 @@ public class Main {
 
 * Delightful API:
 
-```Ohm.db("ohm.db").table(Item.class).insert(new Item("item1"));``` 
+```java
+Ohm.db("ohm.db").table(Item.class).insert(new Item("item1"));
+``` 
 
 or just:
 
-```DB.insert(new Item("item1"));```
+```java
+DB.insert(new Item("item1"));
+```
 
 * ACID transactions with automatic recovery
 
