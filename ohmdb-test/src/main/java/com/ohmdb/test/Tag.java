@@ -20,7 +20,9 @@ package com.ohmdb.test;
  * #L%
  */
 
-public class Tag extends Entity<Tag> {
+import java.io.Serializable;
+
+public class Tag extends Entity<Tag> implements Serializable {
 
 	public String name;
 
@@ -54,6 +56,11 @@ public class Tag extends Entity<Tag> {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return name == null ? "<null>" : name;
 	}
 
 }

@@ -20,6 +20,7 @@ package com.ohmdb.joker;
  * #L%
  */
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,7 +97,7 @@ public class JokerCreatorImpl implements JokerCreator {
 		case DATE:
 			return instance(prop, Date.class);
 		case OBJECT:
-			return instance(prop, Object.class);
+			return instance(prop, prop.getType());
 		default:
 			throw Errors.notExpected();
 		}
@@ -117,10 +118,14 @@ public class JokerCreatorImpl implements JokerCreator {
 	}
 
 	private Object instance(Prop prop, Class<?> clazz, Object... args) {
-		Constructor<?>[] constructors = clazz.getConstructors();
+		if (clazz.isArray()) {
+			return Array.newInstance(clazz.getComponentType(), 0);
+		}
+		Constructor<?>[] constructors = clazz.getDeclaredConstructors();
 		for (Constructor<?> constructor : constructors) {
 			if (constructor.getParameterTypes().length == args.length) {
 				try {
+					constructor.setAccessible(true);
 					Object obj = constructor.newInstance(args);
 					instances.add(obj);
 					names.add(prop.getName());
