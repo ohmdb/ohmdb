@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -532,7 +533,7 @@ public class U {
 
 		case STRING:
 			String str = (String) value;
-			byte[] bytes = str.getBytes();
+			byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
 			// 0-255
 			int len = bytes.length;
 			if (len < 255) {
@@ -642,7 +643,7 @@ public class U {
 			}
 			byte[] sbuf = new byte[realLen];
 			buf.get(sbuf);
-			return new String(sbuf);
+			return new String(sbuf, StandardCharsets.UTF_8);
 
 		case OBJECT:
 			return deserialize(buf);

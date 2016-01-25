@@ -21,13 +21,14 @@ package com.ohmdb.codec;
  */
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class StrCodec implements StoreCodec<String> {
 
 	@Override
 	public void encode(ByteBuffer buf, String value) {
 		buf.putInt(value.length());
-		buf.put(value.getBytes());
+		buf.put(value.getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Override
@@ -35,7 +36,7 @@ public class StrCodec implements StoreCodec<String> {
 		int length = buf.getInt();
 		byte[] bytes = new byte[length];
 		buf.get(bytes);
-		String str = new String(bytes);
+		String str = new String(bytes, StandardCharsets.UTF_8);
 		return str;
 	}
 
