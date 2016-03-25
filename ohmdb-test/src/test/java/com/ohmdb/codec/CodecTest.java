@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.ohmdb.test.Tag;
 import org.testng.annotations.Test;
 
 import com.ohmdb.test.TestCommons;
@@ -93,6 +94,13 @@ public class CodecTest extends TestCommons {
 		verify(new int[] { 3, 5, 7 });
 		verify(new byte[] { 0, 123 });
 		verify(new String[] { "f", "bb" });
+	}
+
+	@Test
+	public void shouldEncodeAndDecodeSerializablePOJOs() {
+		verify(new Tag("rainbow"));
+		verify(new Tag[] { new Tag("red"), new Tag("orange"), new Tag("yellow"),
+				new Tag("green"), new Tag("blue"), new Tag("indigo"), new Tag("violet") });
 	}
 
 	@Test

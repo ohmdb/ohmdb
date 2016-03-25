@@ -24,10 +24,12 @@ public class Person2 {
 
 	private String name;
 	private int ageto;
+	private Tag[] tags;
 
-	public Person2(String name, int age) {
+	public Person2(String name, int age, Tag... tags) {
 		this.name = name;
 		this.ageto = age;
+		this.tags = tags;
 	}
 
 	public Person2() {
@@ -80,6 +82,14 @@ public class Person2 {
 
 	public void setAge(int age) {
 		this.ageto = age;
+	}
+
+	public Tag[] getTags() {
+		return tags;
+	}
+
+	public void setTags(Tag... tags) {
+		this.tags = tags;
 	}
 
 }

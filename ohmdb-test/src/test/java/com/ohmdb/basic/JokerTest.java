@@ -59,14 +59,30 @@ public class JokerTest extends TestCommons {
 		public Object r1;
 		public Object r2;
 
+		public Nested s1;
+		public Nested s2;
+
 		@Override
 		public String toString() {
 			return "Foo [a1=" + a1 + ", a2=" + a2 + ", b1=" + b1 + ", b2=" + b2 + ", b3=" + b3 + ", c=" + c + ", d="
 					+ d + ", e=" + e + ", f=" + f + ", g=" + g + ", h=" + h + ", i=" + i + ", j=" + j + ", k=" + k
 					+ ", l=" + l + ", m=" + m + ", n=" + n + ", o=" + o + ", p=" + p + ", q1=" + q1 + ", q2=" + q2
-					+ ", r1=" + r1 + ", r2=" + r2 + "]";
+					+ ", r1=" + r1 + ", r2=" + r2 + ", s1=" + s1 + ", s2=" + s2 + "]";
 		}
 
+	}
+
+	private static class Nested {
+		public String a;
+		public int b;
+
+		private Nested() {
+		}
+
+		@Override
+		public String toString() {
+			return "Nested [a=" + a + ", b=" + b + "]";
+		}
 	}
 
 	public static class Bar {
@@ -108,6 +124,9 @@ public class JokerTest extends TestCommons {
 
 		eq(foo.nameOf(joker.r1), "r1");
 		eq(foo.nameOf(joker.r2), "r2");
+
+		eq(foo.nameOf(joker.s1), "s1");
+		eq(foo.nameOf(joker.s2), "s2");
 
 		System.out.println(joker);
 	}

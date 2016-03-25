@@ -23,6 +23,7 @@ package com.ohmdb.basic;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ohmdb.test.Tag;
 import org.testng.annotations.Test;
 
 import com.ohmdb.api.OhmDB;
@@ -97,18 +98,20 @@ public class CRUDTest extends TestCommons {
 
 		/*** INSERT ***/
 
-		long id0 = persons.insert(person2("john", 29));
-		long id1 = persons.insert(person2("bill", 13));
+		long id0 = persons.insert(person2("john", 29, new Tag("architect"), new Tag("fashionista")));
+		long id1 = persons.insert(person2("bill", 13, new Tag("astronaut")));
 
 		eq(persons.size(), 2);
 
 		Person2 p0 = persons.get(id0);
 		eq(p0.getName(), "john");
 		eq(p0.getAge(), 29);
+		eqs(p0.getTags(), new Tag[] { new Tag("architect"), new Tag("fashionista") });
 
 		Person2 p1 = persons.get(id1);
 		eq(p1.getName(), "bill");
 		eq(p1.getAge(), 13);
+		eqs(p1.getTags(), new Tag[] { new Tag("astronaut") });
 
 		/*** SET ***/
 
@@ -117,16 +120,19 @@ public class CRUDTest extends TestCommons {
 		Person2 p2 = persons.get(id0);
 		eq(p2.getName(), "doe");
 		eq(p2.getAge(), 29);
+		eqs(p2.getTags(), new Tag[] { new Tag("architect"), new Tag("fashionista") });
 
 		/*** UPDATE ***/
 
 		p0.setName("silvester");
 		p0.setAge(2);
+		p0.setTags(new Tag("pilot"));
 		persons.update(id0, p0);
 
 		Person2 p3 = persons.get(id0);
 		eq(p3.getName(), "silvester");
 		eq(p3.getAge(), 2);
+		eqs(p3.getTags(), new Tag[] { new Tag("pilot") });
 
 		/*** UPDATE FROM MAP ***/
 

@@ -329,8 +329,8 @@ public abstract class TestCommons {
 		return new Person(name, age);
 	}
 
-	protected static Person2 person2(String name, int age) {
-		return new Person2(name, age);
+	protected static Person2 person2(String name, int age, Tag... tags) {
+		return new Person2(name, age, tags == null || tags.length == 0 ? null : tags);
 	}
 
 	protected static Book book(String title, boolean published) {
